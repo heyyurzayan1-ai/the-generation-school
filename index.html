@@ -1,10 +1,45 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>The Generation School | TGS</title><meta name="theme-color" content="#10213e">
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#101b32">
+<meta name="description" content="The Generation School digital school management portal">
+<title>The Generation School | TGS</title>
 <style>
-*{box-sizing:border-box;font-family:Arial,sans-serif}body{margin:0;min-height:100vh;background:#eef2f7;color:#172033}.top{background:#10213e;color:#fff;padding:25px 18px;text-align:center}.logo{font-size:15px;letter-spacing:5px;color:#93c5fd;font-weight:bold}.top h1{margin:9px 0 5px;font-size:30px}.top p{margin:0;color:#cbd5e1}.wrap{max-width:1000px;margin:28px auto;padding:0 16px}.heading{font-size:20px;margin:0 0 15px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:15px}.tile{display:block;text-decoration:none;color:#172033;background:white;border:1px solid #dbe3ee;border-radius:14px;padding:22px;box-shadow:0 5px 18px #10213e0c;transition:.15s}.tile:hover{transform:translateY(-2px);border-color:#3b82f6}.emoji{font-size:30px}.tile h2{font-size:18px;margin:12px 0 6px}.tile p{font-size:13px;line-height:1.5;color:#64748b;margin:0}.open{display:inline-block;margin-top:15px;color:#1d4ed8;font-size:13px;font-weight:bold}.notice{margin-top:20px;padding:14px 16px;background:#fff7ed;border:1px solid #fed7aa;border-radius:10px;color:#9a3412;font-size:13px;line-height:1.5}footer{text-align:center;padding:28px;color:#64748b;font-size:12px}
-</style></head><body><header class="top"><div class="logo">TGS</div><h1>The Generation School</h1><p>School Management System</p></header><main class="wrap"><h2 class="heading">School Portals</h2><div class="grid">
-<a class="tile" href="./admin.html"><div class="emoji">👨‍💼</div><h2>Administrator</h2><p>Manage students, accounts, homework, classes and school announcements.</p><span class="open">Open Admin Dashboard →</span></a>
-<a class="tile" href="./teacher.html"><div class="emoji">👨‍🏫</div><h2>Teacher</h2><p>Access the teacher portal for class work and learning materials.</p><span class="open">Open Teacher Portal →</span></a>
-<a class="tile" href="./student.html"><div class="emoji">🎓</div><h2>Student</h2><p>Access assigned homework, announcements and study materials.</p><span class="open">Open Student Portal →</span></a>
-<a class="tile" href="./parent.html"><div class="emoji">👨‍👩‍👧</div><h2>Parents</h2><p>View linked students’ homework and school updates.</p><span class="open">Open Parent Portal →</span></a>
-</div><div class="notice"><b>Access note:</b> The portals connect to the school database and require an authorized account. Login/security setup is being finalized separately; admin controls are not made public to protect school records.</div></main><footer>© The Generation School · TGS</footer></body></html>
+:root{--navy:#101b32;--navy2:#1c3154;--gold:#c9a45c;--gold2:#ead29b;--ink:#1a2942;--muted:#718096;--line:#e8e1d3}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 50% -10%,#f1e6cc 0,transparent 42%),linear-gradient(180deg,#f8f7f3,#f1efe9);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--ink)}
+.hero{position:relative;overflow:hidden;background:linear-gradient(125deg,#0b1528,#172b4c 58%,#263c5e);color:#fff;text-align:center;padding:58px 18px 64px;border-bottom:4px solid var(--gold)}
+.hero:before,.hero:after{content:"";position:absolute;border:1px solid #d8bb7950;border-radius:50%;width:340px;height:340px;top:-210px}.hero:before{left:-100px}.hero:after{right:-100px}
+.brand{display:inline-flex;align-items:center;justify-content:center;width:58px;height:58px;border:1px solid #d9bd7b;border-radius:18px;color:var(--gold2);font-size:22px;font-weight:900;letter-spacing:2px;box-shadow:0 0 0 7px #ffffff08}
+.eyebrow{margin:20px 0 7px;color:var(--gold2);font-size:10px;font-weight:800;letter-spacing:4px;text-transform:uppercase}
+h1{font-family:Georgia,serif;font-size:clamp(31px,6vw,53px);font-weight:500;letter-spacing:-1px;margin:0}
+.subtitle{color:#cbd5e1;margin:12px 0 0;font-size:14px;letter-spacing:1.5px}
+.wrap{max-width:1050px;margin:-27px auto 0;padding:0 18px 35px;position:relative}
+.intro{text-align:center;margin:0 auto 25px;padding-top:48px}.intro h2{font-size:20px;margin:0 0 7px;color:var(--navy)}.intro p{margin:0;color:var(--muted);font-size:13px}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:17px}
+.tile{position:relative;display:flex;flex-direction:column;min-height:250px;padding:25px 23px 22px;text-decoration:none;color:var(--ink);background:linear-gradient(145deg,#fff,#fbfaf6);border:1px solid var(--line);border-radius:18px;box-shadow:0 12px 32px #14213a0d;transition:transform .22s,border-color .22s,box-shadow .22s;overflow:hidden}
+.tile:after{content:"";position:absolute;right:-40px;top:-48px;width:125px;height:125px;border:1px solid #c9a45c35;border-radius:50%}
+.tile:hover{transform:translateY(-5px);border-color:var(--gold);box-shadow:0 18px 38px #14213a18}
+.symbol{display:flex;align-items:center;justify-content:center;width:52px;height:52px;border-radius:15px;background:#172b4c;color:var(--gold2);font-size:24px;box-shadow:0 6px 14px #172b4c24}
+.tile h3{font-size:19px;margin:19px 0 7px;color:var(--navy)}
+.tile p{font-size:13px;line-height:1.65;color:var(--muted);margin:0 0 20px;flex:1}
+.open{display:flex;align-items:center;justify-content:space-between;padding-top:13px;border-top:1px solid var(--line);font-size:12px;font-weight:800;color:#987638;letter-spacing:.3px}
+.arrow{font-size:18px}
+.security{text-align:center;max-width:700px;margin:22px auto 0;padding:13px 16px;border:1px solid #e7dfce;border-radius:12px;background:#ffffffa8;color:#667085;font-size:11px;line-height:1.6}
+footer{text-align:center;padding:20px 12px 28px;color:#8b929e;font-size:11px;letter-spacing:.5px}
+@media(max-width:760px){.hero{padding:44px 16px 52px}.grid{grid-template-columns:1fr;gap:12px}.tile{min-height:unset;padding:20px;display:grid;grid-template-columns:54px 1fr;column-gap:14px}.symbol{grid-row:1/3}.tile h3{margin:2px 0 4px}.tile p{grid-column:2;margin:0 0 13px}.open{grid-column:1/3}.intro{padding-top:43px}.wrap{padding-left:14px;padding-right:14px}}
+</style>
+</head>
+<body>
+<header class="hero"><div class="brand">TGS</div><div class="eyebrow">Learn · Lead · Succeed</div><h1>The Generation School</h1><p class="subtitle">DIGITAL SCHOOL MANAGEMENT SYSTEM</p></header>
+<main class="wrap">
+<div class="intro"><h2>Welcome to TGS Portal</h2><p>Please select your portal to continue</p></div>
+<div class="grid">
+<a class="tile" href="./student.html"><div class="symbol">🎓</div><h3>Student</h3><p>View your daily homework, study materials and important school announcements.</p><span class="open">ENTER STUDENT PORTAL <span class="arrow">→</span></span></a>
+<a class="tile" href="./teacher.html"><div class="symbol">📚</div><h3>Teacher</h3><p>Publish class homework, share learning resources and stay updated with school notices.</p><span class="open">ENTER TEACHER PORTAL <span class="arrow">→</span></span></a>
+<a class="tile" href="./admin.html"><div class="symbol">🏛️</div><h3>Administrator</h3><p>Manage admissions, classes, attendance, fees, exams and school-wide records.</p><span class="open">ENTER ADMIN PORTAL <span class="arrow">→</span></span></a>
+</div>
+<div class="security">Secure school access · Each portal is connected to its own role-based dashboard. Authorized account sign-in is required to access school records.</div>
+</main>
+<footer>© The Generation School · TGS</footer>
+</body></html>
