@@ -1,0 +1,215 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>TGS | The Generation School</title>
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  min-height: 100vh;
+  background: #f1f5f9;
+  color: #172033;
+}
+
+.container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: linear-gradient(135deg,#10213e,#1e40af,#2563eb);
+}
+
+.login-card {
+  background: white;
+  width: 100%;
+  max-width: 440px;
+  padding: 38px;
+  border-radius: 22px;
+  box-shadow: 0 20px 60px #0003;
+}
+
+.logo {
+  width: 75px;
+  height: 75px;
+  background: #1e40af;
+  color: white;
+  border-radius: 20px;
+  display: grid;
+  place-items: center;
+  font-size: 29px;
+  font-weight: bold;
+  margin: 0 auto 18px;
+}
+
+h1 {
+  text-align: center;
+  font-size: 27px;
+  color: #10213e;
+  margin-bottom: 8px;
+}
+
+.school-name {
+  text-align: center;
+  color: #1e40af;
+  font-weight: bold;
+  font-size: 15px;
+  letter-spacing: 1px;
+}
+
+.subtitle {
+  text-align: center;
+  color: #64748b;
+  font-size: 13px;
+  margin: 12px 0 28px;
+}
+
+label {
+  display: block;
+  font-weight: bold;
+  font-size: 14px;
+  margin: 17px 0 9px;
+}
+
+input, select {
+  width: 100%;
+  padding: 14px;
+  border: 1px solid #dbe2ea;
+  border-radius: 10px;
+  font-size: 15px;
+  outline: none;
+  background: white;
+}
+
+input:focus, select:focus {
+  border-color: #2563eb;
+}
+
+.login-btn {
+  width: 100%;
+  padding: 15px;
+  border: none;
+  border-radius: 10px;
+  background: #1e40af;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  margin-top: 25px;
+  cursor: pointer;
+}
+
+.login-btn:hover {
+  background: #1d4ed8;
+}
+
+.notice {
+  text-align: center;
+  color: #94a3b8;
+  font-size: 12px;
+  margin-top: 23px;
+}
+
+.footer {
+  text-align: center;
+  color: white;
+  font-size: 12px;
+  padding: 15px;
+}
+
+@media(max-width:480px) {
+  .login-card {
+    padding: 27px 22px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <div class="login-card">
+
+    <div class="logo">TGS</div>
+
+    <h1>School Work Hub</h1>
+
+    <p class="school-name">
+      THE GENERATION SCHOOL
+    </p>
+
+    <p class="subtitle">
+      Smart Education & Management System
+    </p>
+
+    <form id="loginForm">
+
+      <label for="role">Account Type</label>
+
+      <select id="role" required>
+        <option value="">Select your account</option>
+        <option value="admin">School Administrator</option>
+        <option value="teacher">Teacher</option>
+        <option value="student">Student</option>
+        <option value="parent">Parent</option>
+      </select>
+
+      <label for="username">Username / Email</label>
+
+      <input
+        type="text"
+        id="username"
+        placeholder="Enter your username"
+        required
+      >
+
+      <label for="password">Password</label>
+
+      <input
+        type="password"
+        id="password"
+        placeholder="Enter your password"
+        required
+      >
+
+      <button class="login-btn" type="submit">
+        Sign In →
+      </button>
+
+    </form>
+
+    <p class="notice">
+      Authorized School Members Only
+    </p>
+
+  </div>
+
+</div>
+
+<footer class="footer">
+  TGS School Work Hub © 2026
+</footer>
+
+<script>
+document.getElementById('loginForm')
+.addEventListener('submit', function(event) {
+  event.preventDefault();
+
+  alert(
+    'Welcome to TGS! Authentication will be activated after database integration.'
+  );
+});
+</script>
+
+</body>
+</html>
