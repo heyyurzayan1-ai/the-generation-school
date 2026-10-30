@@ -7,6 +7,12 @@
 
 <title>TGS | The Generation School</title>
 
+<!-- PWA Settings -->
+<link rel="manifest" href="./manifest.json">
+<meta name="theme-color" content="#123b70">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+
 <style>
 * {
   margin: 0;
@@ -223,6 +229,21 @@ document.getElementById('loginForm')
   }
 
 });
+</script>
+
+<!-- Register Service Worker -->
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('./sw.js')
+      .then(function(registration) {
+        console.log('TGS Service Worker registered:', registration.scope);
+      })
+      .catch(function(error) {
+        console.error('TGS Service Worker registration failed:', error);
+      });
+  });
+}
 </script>
 
 </body>
