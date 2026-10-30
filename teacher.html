@@ -1,0 +1,673 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TGS | Teacher Dashboard</title>
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  background: #f1f5f9;
+  color: #172033;
+}
+
+.sidebar {
+  width: 245px;
+  min-height: 100vh;
+  position: fixed;
+  left: 0;
+  top: 0;
+  background: #14264a;
+  color: white;
+  padding: 22px 15px;
+}
+
+.brand {
+  font-size: 25px;
+  font-weight: bold;
+  padding: 10px;
+}
+
+.brand small {
+  display: block;
+  font-size: 11px;
+  color: #b8c8ed;
+  margin-top: 7px;
+}
+
+.menu-title {
+  color: #91a6cc;
+  font-size: 11px;
+  margin: 28px 10px 12px;
+}
+
+.nav-btn {
+  width: 100%;
+  padding: 13px;
+  margin: 4px 0;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  color: #d8e3f8;
+  text-align: left;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.nav-btn.active,
+.nav-btn:hover {
+  background: #29477e;
+  color: white;
+}
+
+.main {
+  margin-left: 245px;
+  padding: 24px;
+}
+
+.topbar {
+  background: white;
+  padding: 18px;
+  border-radius: 13px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 23px;
+}
+
+.topbar h2 {
+  font-size: 20px;
+}
+
+.profile {
+  color: #64748b;
+  font-size: 13px;
+  text-align: right;
+}
+
+.welcome {
+  background: linear-gradient(120deg,#1e40af,#3b82f6);
+  color: white;
+  padding: 30px;
+  border-radius: 17px;
+  margin-bottom: 22px;
+}
+
+.welcome h1 {
+  font-size: 25px;
+  margin-bottom: 12px;
+}
+
+.welcome p {
+  line-height: 1.6;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 16px;
+  margin-bottom: 22px;
+}
+
+.card, .panel {
+  background: white;
+  padding: 21px;
+  border-radius: 14px;
+  margin-bottom: 18px;
+  box-shadow: 0 3px 12px #00000008;
+}
+
+.stat-number {
+  font-size: 27px;
+  color: #1e40af;
+  font-weight: bold;
+  margin-top: 12px;
+}
+
+.panel h3 {
+  margin-bottom: 15px;
+  color: #14264a;
+}
+
+.section {
+  display: none;
+}
+
+.section.active {
+  display: block;
+}
+
+input, select, textarea {
+  width: 100%;
+  padding: 13px;
+  border: 1px solid #dbe2ea;
+  border-radius: 9px;
+  margin: 8px 0 15px;
+  font-size: 14px;
+  background: white;
+}
+
+textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+label {
+  font-size: 13px;
+  font-weight: bold;
+}
+
+.action-btn {
+  background: #1e40af;
+  color: white;
+  border: 0;
+  padding: 13px 19px;
+  border-radius: 9px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.action-btn:hover {
+  background: #1d4ed8;
+}
+
+.item {
+  padding: 15px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  margin: 10px 0;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.empty {
+  color: #94a3b8;
+  padding: 12px 0;
+}
+
+.footer {
+  text-align: center;
+  color: #94a3b8;
+  padding: 25px;
+  font-size: 12px;
+}
+
+@media(max-width:750px) {
+  .sidebar {
+    width: 100%;
+    min-height: auto;
+    position: relative;
+    padding: 12px;
+  }
+
+  .brand {
+    font-size: 21px;
+  }
+
+  .menu-title {
+    margin: 12px 8px;
+  }
+
+  .nav-btn {
+    width: auto;
+    display: inline-block;
+    padding: 10px;
+    margin: 3px;
+  }
+
+  .main {
+    margin-left: 0;
+    padding: 13px;
+  }
+
+  .stats {
+    grid-template-columns: 1fr;
+  }
+
+  .welcome {
+    padding: 22px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<aside class="sidebar">
+
+  <div class="brand">
+    🎓 TGS
+    <small>THE GENERATION SCHOOL</small>
+  </div>
+
+  <div class="menu-title">TEACHER MENU</div>
+
+  <button class="nav-btn active" onclick="showSection('home',this)">🏠 Dashboard</button>
+  <button class="nav-btn" onclick="showSection('classes',this)">🏫 My Classes</button>
+  <button class="nav-btn" onclick="showSection('homework',this)">📚 Daily Homework</button>
+  <button class="nav-btn" onclick="showSection('materials',this)">📂 Study Materials</button>
+  <button class="nav-btn" onclick="showSection('attendance',this)">📅 Attendance</button>
+  <button class="nav-btn" onclick="showSection('results',this)">📊 Exams & Results</button>
+  <button class="nav-btn" onclick="showSection('announcements',this)">📢 Announcements</button>
+  <button class="nav-btn" onclick="showSection('profile',this)">⚙️ My Profile</button>
+  <button class="nav-btn" onclick="logout()">🚪 Logout</button>
+
+</aside>
+
+<main class="main">
+
+  <div class="topbar">
+    <h2 id="pageTitle">Teacher Dashboard</h2>
+    <div class="profile">
+      👨‍🏫 Teacher Panel<br>
+      <b>TGS School</b>
+    </div>
+  </div>
+
+  <section class="section active" id="home">
+
+    <div class="welcome">
+      <h1>Welcome, Teacher! 👋</h1>
+      <p>Manage your classes, homework, attendance and study materials.</p>
+    </div>
+
+    <div class="stats">
+      <div class="card">
+        👨‍🎓 Total Students
+        <div class="stat-number">0</div>
+      </div>
+
+      <div class="card">
+        📚 Homework Posts
+        <div class="stat-number" id="homeworkCount">0</div>
+      </div>
+
+      <div class="card">
+        📂 Study Materials
+        <div class="stat-number" id="materialCount">0</div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>📌 Quick Actions</h3>
+      <button class="action-btn" onclick="showSection('homework')">Send Homework</button>
+      <button class="action-btn" onclick="showSection('attendance')">Mark Attendance</button>
+      <button class="action-btn" onclick="showSection('materials')">Add Material</button>
+    </div>
+
+  </section>
+
+  <section class="section" id="classes">
+    <div class="panel">
+      <h3>🏫 My Classes</h3>
+      <div class="item">Playgroup</div>
+      <div class="item">Nursery</div>
+      <div class="item">Prep</div>
+      <div class="item">Class 1 to Class 10</div>
+      <p class="empty">Class assignments will be connected later.</p>
+    </div>
+  </section>
+
+  <section class="section" id="homework">
+    <div class="panel">
+      <h3>📚 Send Daily Homework</h3>
+
+      <form id="homeworkForm">
+        <label>Class</label>
+        <select id="hwClass" required>
+          <option value="">Select Class</option>
+          <option>Playgroup</option>
+          <option>Nursery</option>
+          <option>Prep</option>
+          <option>Class 1</option>
+          <option>Class 2</option>
+          <option>Class 3</option>
+          <option>Class 4</option>
+          <option>Class 5</option>
+          <option>Class 6</option>
+          <option>Class 7</option>
+          <option>Class 8</option>
+          <option>Class 9</option>
+          <option>Class 10</option>
+        </select>
+
+        <label>Subject</label>
+        <input id="hwSubject" placeholder="e.g. Mathematics" required>
+
+        <label>Homework Details</label>
+        <textarea id="hwDetails" placeholder="Write today's homework..." required></textarea>
+
+        <label>Submission Date</label>
+        <input type="date" id="hwDate" required>
+
+        <button class="action-btn" type="submit">Publish Homework</button>
+      </form>
+    </div>
+
+    <div class="panel">
+      <h3>Published Homework</h3>
+      <div id="homeworkList" class="empty">No homework published yet.</div>
+    </div>
+  </section>
+
+  <section class="section" id="materials">
+    <div class="panel">
+      <h3>📂 Study Materials</h3>
+
+      <form id="materialForm">
+        <label>Class</label>
+        <select id="matClass" required>
+          <option value="">Select Class</option>
+          <option>Playgroup</option>
+          <option>Nursery</option>
+          <option>Prep</option>
+          <option>Class 1</option>
+          <option>Class 2</option>
+          <option>Class 3</option>
+          <option>Class 4</option>
+          <option>Class 5</option>
+          <option>Class 6</option>
+          <option>Class 7</option>
+          <option>Class 8</option>
+          <option>Class 9</option>
+          <option>Class 10</option>
+        </select>
+
+        <label>Material Title</label>
+        <input id="matTitle" placeholder="Enter material name" required>
+
+        <label>Material Link</label>
+        <input type="url" id="matLink" placeholder="Paste Google Drive link" required>
+
+        <button class="action-btn" type="submit">Add Material</button>
+      </form>
+    </div>
+
+    <div class="panel">
+      <h3>Available Materials</h3>
+      <div id="materialList" class="empty">No materials added yet.</div>
+    </div>
+  </section>
+
+  <section class="section" id="attendance">
+    <div class="panel">
+      <h3>📅 Student Attendance</h3>
+
+      <form id="attendanceForm">
+        <label>Class</label>
+        <select id="attClass" required>
+          <option value="">Select Class</option>
+          <option>Playgroup</option>
+          <option>Nursery</option>
+          <option>Prep</option>
+          <option>Class 1</option>
+          <option>Class 2</option>
+          <option>Class 3</option>
+          <option>Class 4</option>
+          <option>Class 5</option>
+          <option>Class 6</option>
+          <option>Class 7</option>
+          <option>Class 8</option>
+          <option>Class 9</option>
+          <option>Class 10</option>
+        </select>
+
+        <label>Student Name</label>
+        <input id="attStudent" placeholder="Enter student name" required>
+
+        <label>Attendance Status</label>
+        <select id="attStatus">
+          <option>Present</option>
+          <option>Absent</option>
+          <option>Late</option>
+        </select>
+
+        <button class="action-btn" type="submit">Save Attendance</button>
+      </form>
+
+      <div id="attendanceList"></div>
+    </div>
+  </section>
+
+  <section class="section" id="results">
+    <div class="panel">
+      <h3>📊 Exams & Results</h3>
+
+      <form id="resultForm">
+        <label>Student Name</label>
+        <input id="resStudent" placeholder="Student name" required>
+
+        <label>Class</label>
+        <select id="resClass" required>
+          <option value="">Select Class</option>
+          <option>Playgroup</option>
+          <option>Nursery</option>
+          <option>Prep</option>
+          <option>Class 1</option>
+          <option>Class 2</option>
+          <option>Class 3</option>
+          <option>Class 4</option>
+          <option>Class 5</option>
+          <option>Class 6</option>
+          <option>Class 7</option>
+          <option>Class 8</option>
+          <option>Class 9</option>
+          <option>Class 10</option>
+        </select>
+
+        <label>Subject</label>
+        <input id="resSubject" placeholder="Subject" required>
+
+        <label>Obtained Marks</label>
+        <input id="resMarks" type="number" min="0" required>
+
+        <label>Total Marks</label>
+        <input id="resTotal" type="number" min="1" required>
+
+        <button class="action-btn" type="submit">Save Result</button>
+      </form>
+
+      <div id="resultList"></div>
+    </div>
+  </section>
+
+  <section class="section" id="announcements">
+    <div class="panel">
+      <h3>📢 Announcements</h3>
+
+      <form id="announcementForm">
+        <label>Announcement</label>
+        <textarea id="announcementText" placeholder="Write announcement..." required></textarea>
+        <button class="action-btn" type="submit">Publish Announcement</button>
+      </form>
+
+      <div id="announcementList"></div>
+    </div>
+  </section>
+
+  <section class="section" id="profile">
+    <div class="panel">
+      <h3>⚙️ Teacher Profile</h3>
+      <p><b>School:</b> The Generation School</p>
+      <p style="margin-top:12px"><b>Role:</b> Teacher</p>
+      <p style="margin-top:12px"><b>Portal:</b> TGS Teacher Dashboard</p>
+      <p class="empty">Account details will be connected later.</p>
+    </div>
+  </section>
+
+  <div class="footer">
+    TGS School Work Hub © 2026
+  </div>
+
+</main>
+
+<script>
+function showSection(id, button) {
+
+  document.querySelectorAll('.section').forEach(section => {
+    section.classList.remove('active');
+  });
+
+  document.getElementById(id).classList.add('active');
+
+  document.querySelectorAll('.nav-btn').forEach(btn => {
+    btn.classList.remove('active');
+  });
+
+  if (button) {
+    button.classList.add('active');
+  } else {
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+      if (btn.getAttribute('onclick').includes("'" + id + "'")) {
+        btn.classList.add('active');
+      }
+    });
+  }
+
+  const titles = {
+    home: 'Teacher Dashboard',
+    classes: 'My Classes',
+    homework: 'Daily Homework',
+    materials: 'Study Materials',
+    attendance: 'Attendance',
+    results: 'Exams & Results',
+    announcements: 'Announcements',
+    profile: 'My Profile'
+  };
+
+  document.getElementById('pageTitle').textContent = titles[id];
+}
+
+let homeworkCount = 0;
+let materialCount = 0;
+
+document.getElementById('homeworkForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+
+  const cls = document.getElementById('hwClass').value;
+  const subject = document.getElementById('hwSubject').value;
+  const details = document.getElementById('hwDetails').value;
+  const date = document.getElementById('hwDate').value;
+
+  const item = document.createElement('div');
+  item.className = 'item';
+
+  const heading = document.createElement('b');
+  heading.textContent = cls + ' - ' + subject;
+
+  const description = document.createElement('p');
+  description.textContent = details;
+
+  const due = document.createElement('small');
+  due.textContent = 'Submission Date: ' + date;
+
+  item.append(heading, description, due);
+  document.getElementById('homeworkList').append(item);
+
+  homeworkCount++;
+  document.getElementById('homeworkCount').textContent = homeworkCount;
+
+  this.reset();
+  alert('Homework added in this demo!');
+});
+
+document.getElementById('materialForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+
+  const cls = document.getElementById('matClass').value;
+  const title = document.getElementById('matTitle').value;
+  const link = document.getElementById('matLink').value;
+
+  const item = document.createElement('div');
+  item.className = 'item';
+
+  const heading = document.createElement('b');
+  heading.textContent = cls + ' - ' + title;
+
+  const anchor = document.createElement('a');
+  anchor.href = link;
+  anchor.target = '_blank';
+  anchor.rel = 'noopener';
+  anchor.textContent = 'Open Material';
+
+  item.append(heading, document.createElement('br'), anchor);
+  document.getElementById('materialList').append(item);
+
+  materialCount++;
+  document.getElementById('materialCount').textContent = materialCount;
+
+  this.reset();
+  alert('Material added in this demo!');
+});
+
+document.getElementById('attendanceForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+
+  const cls = document.getElementById('attClass').value;
+  const student = document.getElementById('attStudent').value;
+  const status = document.getElementById('attStatus').value;
+
+  const item = document.createElement('div');
+  item.className = 'item';
+  item.textContent = cls + ' | ' + student + ' | ' + status;
+
+  document.getElementById('attendanceList').append(item);
+
+  this.reset();
+  alert('Attendance added in this demo!');
+});
+
+document.getElementById('resultForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+
+  const student = document.getElementById('resStudent').value;
+  const cls = document.getElementById('resClass').value;
+  const subject = document.getElementById('resSubject').value;
+  const marks = Number(document.getElementById('resMarks').value);
+  const total = Number(document.getElementById('resTotal').value);
+
+  if (total <= 0 || marks < 0 || marks > total) {
+    alert('Please enter valid marks.');
+    return;
+  }
+
+  const item = document.createElement('div');
+  item.className = 'item';
+  item.textContent = student + ' | ' + cls + ' | ' + subject + ' | ' + marks + '/' + total;
+
+  document.getElementById('resultList').append(item);
+
+  this.reset();
+  alert('Result added in this demo!');
+});
+
+document.getElementById('announcementForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+
+  const message = document.getElementById('announcementText').value;
+
+  const item = document.createElement('div');
+  item.className = 'item';
+  item.textContent = message;
+
+  document.getElementById('announcementList').append(item);
+
+  this.reset();
+  alert('Announcement added in this demo!');
+});
+
+function logout() {
+  window.location.href = 'index.html';
+}
+</script>
+
+</body>
+</html>
