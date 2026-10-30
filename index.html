@@ -124,6 +124,7 @@ input:focus, select:focus {
   color: white;
   font-size: 12px;
   padding: 15px;
+  background: #10213e;
 }
 
 @media(max-width:480px) {
@@ -203,11 +204,27 @@ input:focus, select:focus {
 <script>
 document.getElementById('loginForm')
 .addEventListener('submit', function(event) {
+
   event.preventDefault();
 
-  alert(
-    'Welcome to TGS! Authentication will be activated after database integration.'
-  );
+  const role = document.getElementById('role').value;
+
+  if (role === 'admin') {
+    window.location.href = 'admin.html';
+  }
+
+  else if (role === 'teacher') {
+    alert('Teacher Dashboard is coming soon!');
+  }
+
+  else if (role === 'student') {
+    alert('Student Dashboard is coming soon!');
+  }
+
+  else if (role === 'parent') {
+    alert('Parent Dashboard is coming soon!');
+  }
+
 });
 </script>
 
