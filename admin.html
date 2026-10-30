@@ -1,0 +1,424 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TGS | Admin Dashboard</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
+body{background:#f4f6fb;color:#172033}
+button{cursor:pointer;font-family:inherit}
+.sidebar{
+position:fixed;left:0;top:0;bottom:0;width:255px;
+background:#14264a;color:white;padding:22px 15px;
+overflow-y:auto;z-index:10
+}
+.brand{font-size:25px;font-weight:bold;padding:8px 12px}
+.brand small{display:block;font-size:11px;color:#b8c8ed;margin-top:7px;letter-spacing:1px}
+.menu-title{font-size:11px;color:#91a6cc;margin:27px 12px 12px;letter-spacing:1px}
+.nav-btn{
+width:100%;border:0;background:transparent;color:#d8e3f8;
+padding:13px 12px;text-align:left;border-radius:9px;
+font-size:14px;margin:3px 0;display:flex;gap:12px;align-items:center
+}
+.nav-btn:hover,.nav-btn.active{background:#29477e;color:white}
+.sidebar-bottom{margin-top:25px;border-top:1px solid #ffffff25;padding-top:15px}
+.main{margin-left:255px;min-height:100vh}
+.topbar{
+height:75px;background:white;display:flex;align-items:center;
+justify-content:space-between;padding:0 30px;
+box-shadow:0 2px 10px #00000008
+}
+.topbar h2{font-size:20px}
+.admin-user{display:flex;align-items:center;gap:10px;font-size:13px;color:#64748b}
+.avatar{width:38px;height:38px;border-radius:50%;background:#e0eaff;color:#2146b5;display:grid;place-items:center;font-weight:bold}
+.content{padding:28px}
+.welcome{
+background:linear-gradient(110deg,#17366f,#3478e5);
+color:white;border-radius:16px;padding:28px;margin-bottom:25px
+}
+.welcome h2{font-size:24px;margin-bottom:10px}
+.welcome p{color:#dceafe;font-size:14px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:17px}
+.stat{
+background:white;border:1px solid #e8edf5;
+padding:21px;border-radius:13px
+}
+.stat-icon{font-size:25px;margin-bottom:15px}
+.stat-label{font-size:13px;color:#64748b}
+.stat-number{font-size:29px;font-weight:bold;margin:9px 0;color:#17366f}
+.stat small{color:#94a3b8}
+.section-title{font-size:19px;margin:28px 0 16px}
+.columns{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.panel{background:white;border:1px solid #e8edf5;border-radius:13px;padding:20px}
+.panel h3{font-size:16px;margin-bottom:17px}
+.classes{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.class-item{background:#eff5ff;color:#2146b5;padding:13px 5px;text-align:center;border-radius:8px;font-size:13px;font-weight:bold}
+.activity{padding:13px 0;border-bottom:1px solid #edf0f5;font-size:13px;color:#64748b}
+.activity:last-child{border:0}
+.page{display:none}
+.page.active{display:block}
+.page-title{font-size:23px;margin-bottom:8px}
+.page-desc{color:#64748b;font-size:14px;margin-bottom:23px}
+.action-btn{border:0;padding:12px 17px;border-radius:8px;font-weight:bold;margin:4px}
+.blue{background:#2146b5;color:white}
+.light{background:#eaf0fa;color:#2146b5}
+.data-table{width:100%;border-collapse:collapse;margin-top:20px;background:white}
+.data-table th,.data-table td{text-align:left;padding:15px;border-bottom:1px solid #edf0f5;font-size:13px}
+.data-table th{background:#f8fafc;color:#64748b}
+.empty{background:white;padding:35px;text-align:center;border-radius:12px;color:#94a3b8;margin-top:18px}
+.form-box{background:white;padding:22px;border-radius:12px;margin-top:18px}
+.form-box input,.form-box select,.form-box textarea{
+width:100%;padding:12px;margin:8px 0 15px;border:1px solid #dbe2ea;border-radius:8px
+}
+.form-box label{font-size:13px;font-weight:bold}
+.mobile-menu{display:none;background:#2146b5;color:white;border:0;padding:9px 12px;border-radius:7px}
+.footer{text-align:center;color:#94a3b8;font-size:12px;padding:25px}
+@media(max-width:1000px){.stats{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:700px){
+.sidebar{display:none;width:255px}
+.sidebar.open{display:block}
+.main{margin-left:0}
+.mobile-menu{display:block}
+.topbar{padding:0 15px}
+.content{padding:17px}
+.columns{grid-template-columns:1fr}
+}
+@media(max-width:400px){.stats{gap:9px}.stat{padding:13px}.stat-number{font-size:23px}.classes{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+
+<body>
+
+<aside class="sidebar" id="sidebar">
+
+<div class="brand">
+🎓 TGS
+<small>THE GENERATION SCHOOL</small>
+</div>
+
+<div class="menu-title">MAIN MENU</div>
+
+<button class="nav-btn active" onclick="openPage('overview',this)">🏠 Dashboard</button>
+<button class="nav-btn" onclick="openPage('students',this)">👨‍🎓 Students</button>
+<button class="nav-btn" onclick="openPage('teachers',this)">👨‍🏫 Teachers</button>
+<button class="nav-btn" onclick="openPage('classes',this)">🏫 Classes & Sections</button>
+
+<div class="menu-title">ACADEMIC MANAGEMENT</div>
+
+<button class="nav-btn" onclick="openPage('homework',this)">📚 Daily Homework</button>
+<button class="nav-btn" onclick="openPage('materials',this)">📂 Study Materials</button>
+<button class="nav-btn" onclick="openPage('attendance',this)">📅 Attendance</button>
+<button class="nav-btn" onclick="openPage('exams',this)">📝 Exams & Results</button>
+
+<div class="menu-title">SCHOOL MANAGEMENT</div>
+
+<button class="nav-btn" onclick="openPage('fees',this)">💰 Fee Management</button>
+<button class="nav-btn" onclick="openPage('announcements',this)">📢 Announcements</button>
+<button class="nav-btn" onclick="openPage('settings',this)">⚙️ Settings</button>
+
+<div class="sidebar-bottom">
+<button class="nav-btn" onclick="logout()">↪ Back to Login</button>
+</div>
+
+</aside>
+
+<div class="main">
+
+<header class="topbar">
+<div style="display:flex;align-items:center;gap:13px">
+<button class="mobile-menu" onclick="toggleMenu()">☰</button>
+<h2 id="heading">Dashboard Overview</h2>
+</div>
+<div class="admin-user">
+<div class="avatar">A</div>
+<div>Administrator<br><small>TGS Admin Panel</small></div>
+</div>
+</header>
+
+<main class="content">
+
+<!-- DASHBOARD -->
+<section class="page active" id="overview">
+
+<div class="welcome">
+<h2>Welcome to TGS Admin Panel 👋</h2>
+<p>The Generation School — Smart School Management System</p>
+<p id="today" style="margin-top:13px"></p>
+</div>
+
+<h3 class="section-title">School Statistics</h3>
+
+<div class="stats">
+<div class="stat">
+<div class="stat-icon">👨‍🎓</div>
+<div class="stat-label">Total Students</div>
+<div class="stat-number" id="studentCount">0</div>
+<small>Registered students</small>
+</div>
+
+<div class="stat">
+<div class="stat-icon">👨‍🏫</div>
+<div class="stat-label">Total Teachers</div>
+<div class="stat-number" id="teacherCount">0</div>
+<small>Registered teachers</small>
+</div>
+
+<div class="stat">
+<div class="stat-icon">🏫</div>
+<div class="stat-label">Total Classes</div>
+<div class="stat-number">13</div>
+<small>Playgroup to Class 10</small>
+</div>
+
+<div class="stat">
+<div class="stat-icon">📚</div>
+<div class="stat-label">Homework Posts</div>
+<div class="stat-number">0</div>
+<small>Assignments</small>
+</div>
+</div>
+
+<h3 class="section-title">Academic Classes</h3>
+
+<div class="columns">
+<div class="panel">
+<h3>🏫 TGS Class Structure</h3>
+<div class="classes" id="classGrid"></div>
+</div>
+
+<div class="panel">
+<h3>📌 Recent Activities</h3>
+<div class="activity">Welcome to TGS Admin Dashboard.</div>
+<div class="activity">School management system initialized.</div>
+<div class="activity">Student module ready for development.</div>
+<div class="activity">Teacher module ready for development.</div>
+</div>
+</div>
+</section>
+
+<!-- STUDENTS -->
+<section class="page" id="students">
+<h2 class="page-title">👨‍🎓 Students Management</h2>
+<p class="page-desc">Manage student registration and records.</p>
+<button class="action-btn blue" onclick="showStudentForm()">+ Add Student</button>
+
+<div id="studentForm" class="form-box" style="display:none">
+<h3>Register New Student</h3>
+<form onsubmit="addStudent(event)">
+<label>Student Name</label>
+<input id="sName" required placeholder="Student full name">
+
+<label>Father Name</label>
+<input id="sFather" required placeholder="Father name">
+
+<label>Class</label>
+<select id="sClass" required>
+<option value="">Select class</option>
+</select>
+
+<label>Roll Number</label>
+<input id="sRoll" required placeholder="Roll number">
+
+<button class="action-btn blue">Save Student (Demo)</button>
+<button type="button" class="action-btn light" onclick="hideStudentForm()">Cancel</button>
+</form>
+</div>
+
+<div class="panel" style="margin-top:18px;overflow-x:auto">
+<h3>Student Records</h3>
+<table class="data-table">
+<thead><tr><th>Name</th><th>Father</th><th>Class</th><th>Roll No.</th></tr></thead>
+<tbody id="studentRows"><tr><td colspan="4" class="empty">No students added yet.</td></tr></tbody>
+</table>
+</div>
+</section>
+
+<!-- TEACHERS -->
+<section class="page" id="teachers">
+<h2 class="page-title">👨‍🏫 Teachers Management</h2>
+<p class="page-desc">Manage school teachers and staff.</p>
+<div class="empty">Teacher registration and staff records will be connected in the next development stage.</div>
+</section>
+
+<!-- CLASSES -->
+<section class="page" id="classes">
+<h2 class="page-title">🏫 Classes & Sections</h2>
+<p class="page-desc">The Generation School academic structure.</p>
+<div class="panel"><div class="classes" id="classGrid2"></div></div>
+</section>
+
+<!-- HOMEWORK -->
+<section class="page" id="homework">
+<h2 class="page-title">📚 Daily Homework</h2>
+<p class="page-desc">Manage daily class assignments.</p>
+<button class="action-btn blue" onclick="demoMessage()">+ Create Homework</button>
+<div class="empty">Homework publishing module is under development.</div>
+</section>
+
+<!-- MATERIALS -->
+<section class="page" id="materials">
+<h2 class="page-title">📂 Study Materials</h2>
+<p class="page-desc">PDFs, notes, pictures, videos and educational resources.</p>
+<button class="action-btn blue" onclick="demoMessage()">+ Upload Material</button>
+<div class="empty">Google Drive integration will be developed here.</div>
+</section>
+
+<!-- ATTENDANCE -->
+<section class="page" id="attendance">
+<h2 class="page-title">📅 Attendance Management</h2>
+<p class="page-desc">Daily student attendance.</p>
+<div class="empty">Attendance system is under development.</div>
+</section>
+
+<!-- EXAMS -->
+<section class="page" id="exams">
+<h2 class="page-title">📝 Exams & Results</h2>
+<p class="page-desc">Manage examinations and student results.</p>
+<div class="empty">Examination and result system is under development.</div>
+</section>
+
+<!-- FEES -->
+<section class="page" id="fees">
+<h2 class="page-title">💰 Fee Management</h2>
+<p class="page-desc">Manage student fee records.</p>
+<div class="empty">Fee management system is under development.</div>
+</section>
+
+<!-- ANNOUNCEMENTS -->
+<section class="page" id="announcements">
+<h2 class="page-title">📢 Announcements</h2>
+<p class="page-desc">Publish important school notices.</p>
+<button class="action-btn blue" onclick="demoMessage()">+ New Announcement</button>
+<div class="empty">Announcement system is under development.</div>
+</section>
+
+<!-- SETTINGS -->
+<section class="page" id="settings">
+<h2 class="page-title">⚙️ School Settings</h2>
+<div class="panel">
+<h3>The Generation School</h3>
+<p style="margin-top:15px">School Short Name: TGS</p>
+<p style="margin-top:12px">Academic System: Playgroup to Class 10</p>
+<p style="margin-top:12px">Software: TGS School Work Hub</p>
+<p style="margin-top:12px">Version: 1.0</p>
+</div>
+</section>
+
+</main>
+
+<footer class="footer">TGS School Work Hub © 2026</footer>
+
+</div>
+
+<script>
+const classNames=[
+"Playgroup","Nursery","Prep",
+"Class 1","Class 2","Class 3",
+"Class 4","Class 5","Class 6",
+"Class 7","Class 8","Class 9","Class 10"
+];
+
+function renderClasses(id){
+document.getElementById(id).innerHTML=
+classNames.map(c=>`<div class="class-item">${c}</div>`).join("");
+}
+
+renderClasses("classGrid");
+renderClasses("classGrid2");
+
+document.getElementById("sClass").innerHTML +=
+classNames.map(c=>`<option>${c}</option>`).join("");
+
+document.getElementById("today").textContent =
+new Date().toLocaleDateString("en-PK",{
+weekday:"long",year:"numeric",month:"long",day:"numeric"
+});
+
+function openPage(id,button){
+document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+document.getElementById(id).classList.add("active");
+
+document.querySelectorAll(".nav-btn").forEach(b=>b.classList.remove("active"));
+if(button)button.classList.add("active");
+
+const names={
+overview:"Dashboard Overview",
+students:"Students Management",
+teachers:"Teachers Management",
+classes:"Classes & Sections",
+homework:"Daily Homework",
+materials:"Study Materials",
+attendance:"Attendance",
+exams:"Exams & Results",
+fees:"Fee Management",
+announcements:"Announcements",
+settings:"School Settings"
+};
+
+document.getElementById("heading").textContent=names[id];
+document.getElementById("sidebar").classList.remove("open");
+}
+
+function toggleMenu(){
+document.getElementById("sidebar").classList.toggle("open");
+}
+
+function showStudentForm(){
+document.getElementById("studentForm").style.display="block";
+}
+
+function hideStudentForm(){
+document.getElementById("studentForm").style.display="none";
+}
+
+let students=[];
+
+function addStudent(event){
+event.preventDefault();
+
+const student={
+name:document.getElementById("sName").value,
+father:document.getElementById("sFather").value,
+className:document.getElementById("sClass").value,
+roll:document.getElementById("sRoll").value
+};
+
+students.push(student);
+
+document.getElementById("studentRows").innerHTML=
+students.map(s=>`
+<tr>
+<td>${escapeHTML(s.name)}</td>
+<td>${escapeHTML(s.father)}</td>
+<td>${escapeHTML(s.className)}</td>
+<td>${escapeHTML(s.roll)}</td>
+</tr>`).join("");
+
+document.getElementById("studentCount").textContent=students.length;
+event.target.reset();
+hideStudentForm();
+
+alert("Demo student added successfully!");
+}
+
+function escapeHTML(value){
+return String(value).replace(/[&<>"']/g,c=>({
+"&":"&amp;","<":"&lt;",">":"&gt;",
+'"':"&quot;","'":"&#39;"
+})[c]);
+}
+
+function demoMessage(){
+alert("This feature will be activated in the next development stage.");
+}
+
+function logout(){
+window.location.href="index.html";
+}
+</script>
+
+</body>
+</html>
