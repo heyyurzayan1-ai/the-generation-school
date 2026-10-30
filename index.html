@@ -3,22 +3,38 @@
 *{box-sizing:border-box;font-family:Arial,sans-serif}body{margin:0;min-height:100vh;background:linear-gradient(135deg,#10213e,#2563eb);display:grid;place-items:center;padding:18px}.card{background:white;width:100%;max-width:430px;padding:30px;border-radius:18px;box-shadow:0 18px 55px #0004}.logo{text-align:center;color:#1e40af;font-size:30px;font-weight:bold}h1{text-align:center;color:#10213e;margin:10px 0 5px}.sub{text-align:center;color:#64748b;margin:0 0 24px;font-size:13px}label{display:block;font-weight:bold;font-size:13px;margin:15px 0 7px}input,button{width:100%;padding:14px;border-radius:9px;font-size:15px}input{border:1px solid #cbd5e1}button{border:0;background:#1e40af;color:white;font-weight:bold;margin-top:20px}button:disabled{opacity:.6}#message{font-size:13px;line-height:1.5;margin-top:15px;color:#b91c1c}.foot{text-align:center;color:#64748b;font-size:12px;margin-top:20px}
 </style></head><body><main class="card"><div class="logo">TGS</div><h1>The Generation School</h1><p class="sub">School Management System</p><form id="loginForm"><label for="email">Email</label><input id="email" type="email" autocomplete="username" required placeholder="Your school email"><label for="password">Password</label><input id="password" type="password" autocomplete="current-password" required placeholder="Your password"><button id="loginBtn" type="submit">Sign in securely</button></form><p id="message" role="status"></p><p class="foot">Authorized school accounts only · TGS © 2026</p></main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.95.0"></script><script src="./supabase-config.js"></script><script>
-const msg=document.getElementById('message'),btn=document.getElementById('loginBtn');
-if(!window.supabase||!window.TGS_SUPABASE_URL||!window.TGS_SUPABASE_PUBLISHABLE_KEY){msg.textContent='Connection setup is missing. Please contact the school administrator.';}
-else{
-const db=window.supabase.createClient(window.TGS_SUPABASE_URL,window.TGS_SUPABASE_PUBLISHABLE_KEY);
-document.getElementById('loginForm').addEventListener('submit',async e=>{
-e.preventDefault();btn.disabled=true;btn.textContent='Signing in…';msg.style.color='#b91c1c';msg.textContent='';
-const email=document.getElementById('email').value.trim(),password=document.getElementById('password').value;
-const {data,error}=await db.auth.signInWithPassword({email,password});
-if(error){msg.textContent='Login failed: '+error.message;btn.disabled=false;btn.textContent='Sign in securely';return;}
-const {data:profile,error:profileError}=await db.from('profiles').select('role,full_name').eq('id',data.user.id).single();
-if(profileError||!profile){await db.auth.signOut();msg.textContent='Your school profile is not ready. Contact the administrator.';btn.disabled=false;btn.textContent='Sign in securely';return;}
-const pages={admin:'admin.html',teacher:'teacher.html',student:'student.html',parent:'parent.html'};
-if(!pages[profile.role]){await db.auth.signOut();msg.textContent='This account has no valid school role.';btn.disabled=false;btn.textContent='Sign in securely';return;}
-location.replace(pages[profile.role]);
-});
-db.auth.getSession().then(async({data})=>{if(data.session){const{data:p}=await db.from('profiles').select('role').eq('id',data.session.user.id).single();if(p&&['admin','teacher','student','parent'].includes(p.role))location.replace(p.role+'.html');}});
+const msg=document.getElementById('message'),btn=document.getElementById('loginBtn'),form=document.getElementById('loginForm');
+let db=null;
+function failClosed(message){msg.textContent=message;btn.disabled=true;}
+if(!window.supabase||!window.TGS_SUPABASE_URL||!window.TGS_SUPABASE_PUBLISHABLE_KEY){
+ failClosed('Secure connection unavailable. Please contact the school administrator.');
+}else{
+ db=window.supabase.createClient(window.TGS_SUPABASE_URL,window.TGS_SUPABASE_PUBLISHABLE_KEY,{
+   auth:{autoRefreshToken:true,persistSession:true,detectSessionInUrl:true}
+ });
+ // Existing sessions are deliberately NOT allowed to redirect around the login form.
+ form.addEventListener('submit',async e=>{
+  e.preventDefault();
+  if(!db){failClosed('Secure connection unavailable.');return;}
+  btn.disabled=true;btn.textContent='Verifying account…';msg.style.color='#b91c1c';msg.textContent='';
+  const email=document.getElementById('email').value.trim();
+  const password=document.getElementById('password').value;
+  try{
+   const {data,error}=await db.auth.signInWithPassword({email,password});
+   if(error||!data||!data.user){msg.textContent='Email or password is incorrect.';await db.auth.signOut();btn.disabled=false;btn.textContent='Sign in securely';return;}
+   const {data:profile,error:profileError}=await db.from('profiles').select('role').eq('id',data.user.id).maybeSingle();
+   const pages={admin:'admin.html',teacher:'teacher.html',student:'student.html',parent:'parent.html'};
+   if(profileError||!profile||!pages[profile.role]){
+    await db.auth.signOut();
+    msg.textContent='This account is not assigned an active school role. Contact the administrator.';
+    btn.disabled=false;btn.textContent='Sign in securely';return;
+   }
+   location.replace(pages[profile.role]);
+  }catch(err){
+   await db.auth.signOut();
+   msg.textContent='Login could not be verified. Check your internet and try again.';
+   btn.disabled=false;btn.textContent='Sign in securely';
+  }
+ });
 }
-if('serviceWorker'in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
 </script></body></html>
