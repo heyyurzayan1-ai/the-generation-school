@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TGS School Login</title><link rel="manifest" href="./manifest.json"><meta name="theme-color" content="#123b70"><style>
-*{box-sizing:border-box;font-family:Arial,sans-serif}body{margin:0;min-height:100vh;background:linear-gradient(135deg,#10213e,#2563eb);display:grid;place-items:center;padding:18px}.card{background:white;width:100%;max-width:430px;padding:30px;border-radius:18px;box-shadow:0 18px 55px #0004}.logo{text-align:center;color:#1e40af;font-size:30px;font-weight:bold}h1{text-align:center;color:#10213e;margin:10px 0 5px}.sub{text-align:center;color:#64748b;margin:0 0 24px;font-size:13px}label{display:block;font-weight:bold;font-size:13px;margin:15px 0 7px}input,button{width:100%;padding:14px;border-radius:9px;font-size:15px}input{border:1px solid #cbd5e1}button{border:0;background:#1e40af;color:white;font-weight:bold;margin-top:20px}button:disabled{opacity:.6}#message{font-size:13px;line-height:1.5;margin-top:15px;color:#b91c1c}.foot{text-align:center;color:#64748b;font-size:12px;margin-top:20px}
-</style></head><body><main class="card"><div class="logo">TGS</div><h1>The Generation School</h1><p class="sub">School Management System</p><form id="loginForm"><label for="email">Email</label><input id="email" type="email" autocomplete="username" required placeholder="Your school email"><label for="password">Password</label><input id="password" type="password" autocomplete="current-password" required placeholder="Your password"><button id="loginBtn" type="submit">Sign in securely</button></form><p id="message" role="status"></p><p class="foot">Authorized school accounts only · TGS © 2026</p></main>
+*{box-sizing:border-box;font-family:Arial,sans-serif}body{margin:0;min-height:100vh;background:linear-gradient(135deg,#10213e,#2563eb);display:grid;place-items:center;padding:18px}.card{background:white;width:100%;max-width:430px;padding:30px;border-radius:18px;box-shadow:0 18px 55px #0004}.logo{text-align:center;color:#1e40af;font-size:30px;font-weight:bold}h1{text-align:center;color:#10213e;margin:10px 0 5px}.sub{text-align:center;color:#64748b;margin:0 0 24px;font-size:13px}label{display:block;font-weight:bold;font-size:13px;margin:15px 0 7px}input,select,button{width:100%;padding:14px;border-radius:9px;font-size:15px}input,select{border:1px solid #cbd5e1;background:white}button{border:0;background:#1e40af;color:white;font-weight:bold;margin-top:20px}button:disabled{opacity:.6}#message{font-size:13px;line-height:1.5;margin-top:15px;color:#b91c1c}.foot{text-align:center;color:#64748b;font-size:12px;margin-top:20px}
+</style></head><body><main class="card"><div class="logo">TGS</div><h1>The Generation School</h1><p class="sub">School Management System</p><form id="loginForm"><label for="role">Who is logging in?</label><select id="role" required><option value="">Select your panel</option><option value="admin">Administrator</option><option value="teacher">Teacher</option><option value="student">Student</option><option value="parent">Parent / Guardian</option></select><label for="email">Email</label><input id="email" type="email" autocomplete="username" required placeholder="Your school email"><label for="password">Password</label><input id="password" type="password" autocomplete="current-password" required placeholder="Your password"><button id="loginBtn" type="submit">Sign in securely</button></form><p id="message" role="status"></p><p class="foot">Authorized school accounts only · TGS © 2026</p></main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.95.0"></script><script src="./supabase-config.js"></script><script>
 const msg=document.getElementById('message'),btn=document.getElementById('loginBtn'),form=document.getElementById('loginForm');
 let db=null;
@@ -18,7 +18,7 @@ if(!window.supabase||!window.TGS_SUPABASE_URL||!window.TGS_SUPABASE_PUBLISHABLE_
   if(!db){failClosed('Secure connection unavailable.');return;}
   btn.disabled=true;btn.textContent='Verifying account…';msg.style.color='#b91c1c';msg.textContent='';
   const email=document.getElementById('email').value.trim();
-  const password=document.getElementById('password').value;
+  const password=document.getElementById('password').value;\n  const selectedRole=document.getElementById('role').value;
   try{
    const {data,error}=await db.auth.signInWithPassword({email,password});
    if(error||!data||!data.user){msg.textContent='Email or password is incorrect.';await db.auth.signOut();btn.disabled=false;btn.textContent='Sign in securely';return;}
@@ -29,7 +29,7 @@ if(!window.supabase||!window.TGS_SUPABASE_URL||!window.TGS_SUPABASE_PUBLISHABLE_
     msg.textContent='This account is not assigned an active school role. Contact the administrator.';
     btn.disabled=false;btn.textContent='Sign in securely';return;
    }
-   location.replace(pages[profile.role]);
+   if(profile.role!==selectedRole){\n    await db.auth.signOut();\n    msg.textContent='Selected panel does not match this account. Please choose '+profile.role.toUpperCase()+' and sign in again.';\n    btn.disabled=false;btn.textContent='Sign in securely';return;\n   }\n   location.replace(pages[profile.role]);
   }catch(err){
    await db.auth.signOut();
    msg.textContent='Login could not be verified. Check your internet and try again.';
