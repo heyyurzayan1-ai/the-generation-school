@@ -209,20 +209,17 @@ document.getElementById('loginForm')
 
   const role = document.getElementById('role').value;
 
-  if (role === 'admin') {
-    window.location.href = 'admin.html';
-  }
+  const dashboards = {
+    admin: 'admin.html',
+    teacher: 'teacher.html',
+    student: 'student.html',
+    parent: 'parent.html'
+  };
 
-  else if (role === 'teacher') {
-    alert('Teacher Dashboard is coming soon!');
-  }
-
-  else if (role === 'student') {
-    alert('Student Dashboard is coming soon!');
-  }
-
-  else if (role === 'parent') {
-    alert('Parent Dashboard is coming soon!');
+  if (dashboards[role]) {
+    window.location.href = dashboards[role];
+  } else {
+    alert('Please select a valid account type.');
   }
 
 });
