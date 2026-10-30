@@ -1,5 +1,50 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TGS | Administration</title><style>
 :root{--navy:#10213e;--blue:#2563eb;--bg:#f3f6fb;--line:#e5eaf2;--muted:#718096}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:#172033;font-family:Inter,Arial,sans-serif}.side{position:fixed;inset:0 auto 0 0;width:245px;background:var(--navy);color:white;padding:24px 14px;overflow:auto}.brand{padding:5px 12px 25px;border-bottom:1px solid #ffffff22}.brand b{font-size:22px;letter-spacing:3px}.brand small{display:block;color:#a9c2e8;margin-top:7px}.nav{margin-top:20px}.nav button{width:100%;border:0;background:transparent;color:#cbd5e1;text-align:left;padding:13px 14px;border-radius:9px;margin:3px 0;font-size:14px;cursor:pointer}.nav button.active,.nav button:hover{background:#ffffff18;color:white}.main{margin-left:245px}.top{height:76px;background:white;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 28px}.top strong{font-size:19px}.wrap{padding:26px;max-width:1400px;margin:auto}.page{display:none}.page.active{display:block}.muted{color:var(--muted);font-size:13px}.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:14px;margin:20px 0}.card,.panel{background:white;border:1px solid var(--line);border-radius:13px;padding:18px;box-shadow:0 3px 12px #10213e08}.metric{font-size:28px;font-weight:750;color:var(--navy);margin-top:10px}.metric-label{font-size:13px;color:var(--muted)}.panel{margin:16px 0}.panel h3{margin:0 0 16px;font-size:16px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}.field label{font-size:12px;font-weight:700;color:#475569}.field input,.field select,.field textarea{width:100%;margin-top:6px;padding:11px;border:1px solid #d7deea;border-radius:8px;background:white;font-size:14px}.field textarea{min-height:85px}.btn{background:var(--blue);color:white;border:0;padding:11px 16px;border-radius:8px;font-weight:700;cursor:pointer}.btn.secondary{background:#eaf1ff;color:#1d4ed8}.btn.danger{background:#fee2e2;color:#991b1b}.tablewrap{overflow:auto}table{border-collapse:collapse;width:100%;min-width:620px}th,td{text-align:left;padding:12px 10px;border-bottom:1px solid var(--line);font-size:13px}th{background:#f8fafc;color:#64748b}.actions{display:flex;gap:8px;align-items:end;flex-wrap:wrap}.status{padding:12px;border-radius:8px;background:#eff6ff;color:#1d4ed8;margin:12px 0;display:none}.status.bad{background:#fee2e2;color:#991b1b}.pill{display:inline-block;padding:4px 9px;background:#eff6ff;color:#1d4ed8;border-radius:30px;font-size:11px;font-weight:700}.rowhead{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}.hamb{display:none}@media(max-width:760px){.side{width:72px;padding:16px 7px}.brand{padding:6px;text-align:center}.brand b{font-size:14px}.brand small,.nav button span{display:none}.nav button{text-align:center;font-size:18px;padding:13px 5px}.main{margin-left:72px}.top{padding:0 14px}.wrap{padding:15px}.top strong{font-size:16px}}
+
+/* TGS luxury visual system */
+:root{--navy:#101b2d;--blue:#b18a4a;--bg:#f5f3ee;--line:#e9e2d6;--muted:#817b70}
+body{background:radial-gradient(ellipse at 85% 0%,#fff 0,#f5f3ee 48%,#efede7 100%);color:#252a32;font-family:Inter,"Segoe UI",Arial,sans-serif;letter-spacing:.1px}
+.side{background:linear-gradient(180deg,#101b2d 0%,#172943 55%,#0d1726 100%);box-shadow:8px 0 32px #101b2d18;padding:27px 16px}
+.brand{padding:8px 13px 27px;border-bottom:1px solid #c6a56b35}
+.brand b{font-family:Georgia,serif;font-size:27px;letter-spacing:5px;color:#e2c58d}
+.brand small{font-size:9px;letter-spacing:2px;color:#b9c4d2}
+.nav{margin-top:25px}
+.nav button{color:#b9c4d2;padding:14px 15px;border-radius:10px;margin:4px 0;font-size:13px;letter-spacing:.2px;transition:all .2s}
+.nav button.active,.nav button:hover{background:linear-gradient(100deg,#c29a58 0%,#98713a 100%);color:#fff;box-shadow:0 7px 18px #0003}
+.main{min-height:100vh}
+.top{height:82px;background:#ffffffdf;backdrop-filter:blur(14px);border-bottom:1px solid #e9e2d6;padding:0 34px;box-shadow:0 3px 18px #29251e08}
+.top strong{font-family:Georgia,serif;font-weight:600;font-size:22px;color:#17263b;letter-spacing:.2px}
+#adminName{font-size:13px;font-weight:600;color:#5e6470;margin-right:12px}
+.wrap{padding:32px;max-width:1500px}
+.page>h2,.page .rowhead h2{font-family:Georgia,serif;font-size:29px;font-weight:500;color:#17263b;letter-spacing:.1px}
+.muted{color:#858174}
+.cards{gap:17px;margin:25px 0}
+.card,.panel{background:linear-gradient(145deg,#fff 0%,#fdfcf9 100%);border:1px solid #e9e2d6;border-radius:16px;padding:21px;box-shadow:0 8px 26px #2530440a,0 1px 2px #25304408}
+.card{position:relative;overflow:hidden;transition:transform .2s,box-shadow .2s}
+.card:before{content:"";position:absolute;inset:0 auto 0 0;width:3px;background:linear-gradient(#d8bd88,#a77b3c)}
+.card:hover{transform:translateY(-3px);box-shadow:0 14px 30px #25304412}
+.metric{font-family:Georgia,serif;font-size:34px;font-weight:600;color:#17263b;margin-top:13px}
+.metric-label{font-size:11px;text-transform:uppercase;letter-spacing:1.1px;color:#8c806e;font-weight:700}
+.panel{margin:19px 0;padding:23px}
+.panel h3{font-family:Georgia,serif;font-size:19px;font-weight:600;color:#26364b;margin-bottom:19px}
+.field label{font-size:11px;text-transform:uppercase;letter-spacing:.7px;color:#777064}
+.field input,.field select,.field textarea{border:1px solid #e3ddd2;border-radius:10px;padding:12px 13px;background:#fffdfa;color:#252a32;outline:none;transition:border .2s,box-shadow .2s}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:#b18a4a;box-shadow:0 0 0 3px #b18a4a1c}
+.btn{background:linear-gradient(110deg,#b58c4e,#8f6938);color:white;border:1px solid #a27b43;border-radius:9px;padding:12px 18px;box-shadow:0 5px 13px #9b773a25;transition:transform .15s,filter .15s}
+.btn:hover{filter:brightness(1.06);transform:translateY(-1px)}
+.btn.secondary{background:#f4efe5;color:#795b30;border:1px solid #e4d7bf;box-shadow:none}
+.btn.danger{background:#fff0ed;color:#a33e30;border-color:#f2d0ca;box-shadow:none}
+table{border-collapse:separate;border-spacing:0}
+th,td{padding:14px 12px;border-bottom:1px solid #eee9e0;font-size:13px}
+th{background:#f7f4ed;color:#85765f;text-transform:uppercase;letter-spacing:.7px;font-size:10px;font-weight:700}
+tr:last-child td{border-bottom:0}
+tbody tr:hover{background:#fbf8f1}
+.status{border:1px solid #e5d8bd;border-radius:10px;background:#f8f2e7;color:#73562d}
+.status.bad{background:#fff0ed;color:#9b392d;border-color:#f0d0c9}
+.pill{background:#f4ecdd;color:#886536;border:1px solid #e8d8b9;padding:6px 11px;letter-spacing:.5px}
+#activity{line-height:2.1}
+@media(max-width:760px){.side{box-shadow:3px 0 15px #101b2d18}.top{height:70px;padding:0 12px}.top strong{font-size:17px}.wrap{padding:15px}.page>h2,.page .rowhead h2{font-size:24px}.card,.panel{border-radius:13px;padding:16px}.metric{font-size:29px}#adminName{display:none}}
+
 </style></head><body><aside class="side"><div class="brand"><b>TGS</b><small>THE GENERATION SCHOOL</small></div><nav class="nav">
 <button class="active" data-page="overview">▦ <span>Dashboard</span></button><button data-page="students">♙ <span>Students</span></button><button data-page="attendance">✓ <span>Attendance</span></button><button data-page="homework">▤ <span>Homework</span></button><button data-page="materials">▧ <span>Study Materials</span></button><button data-page="exams">✎ <span>Exams & Results</span></button><button data-page="fees">৳ <span>Fee Records</span></button><button data-page="accounts">♧ <span>Accounts & Classes</span></button><button data-page="announcements">⚑ <span>Announcements</span></button>
 </nav></aside><div class="main"><header class="top"><strong id="pageTitle">School Dashboard</strong><div><span id="adminName">Administrator</span> <button class="btn secondary" id="logout">Sign out</button></div></header><main class="wrap"><div id="status" class="status"></div>
