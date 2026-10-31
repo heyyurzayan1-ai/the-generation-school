@@ -51,8 +51,8 @@ document.querySelectorAll('[data-page]').forEach(b=>b.addEventListener('click',(
   if(!['student','admin'].includes(profile.role)||profile.approval_status!=='approved'){await sb.auth.signOut();location.replace('./auth.html?role=student');return}
   const {data:studentData,error:studentError}=studentResult;
   if(studentError)throw studentError;
-  let student=profile.role==='admin'?(studentData||[])[0]:(studentData||null);
-  if(profile.role==='admin'){$('adminStudentPicker').style.display='block';$('adminStudentSelect').innerHTML=(studentData||[]).map(x=>'<option value="'+esc(x.id)+'">'+esc(x.full_name)+' · '+esc(x.class_name)+' · '+esc(x.roll_number)+'</option>').join('');$('adminStudentSelect').onchange=()=>{const chosen=(studentData||[]).find(x=>x.id===$('adminStudentSelect').value);if(chosen)location.hash='student-'+chosen.id;};}
+  const requestedStudent=new URLSearchParams(location.search).get('student');let student=profile.role==='admin'?((studentData||[]).find(x=>x.id===requestedStudent)||(studentData||[])[0]):(studentData||null);
+  if(profile.role==='admin'){$('adminStudentPicker').style.display='block';$('adminStudentSelect').innerHTML=(studentData||[]).map(x=>'<option value="'+esc(x.id)+'">'+esc(x.full_name)+' · '+esc(x.class_name)+' · '+esc(x.roll_number)+'</option>').join('');if(student)$('adminStudentSelect').value=student.id;$('adminStudentSelect').onchange=()=>{location.search='?student='+encodeURIComponent($('adminStudentSelect').value);};}
   if(!student){$('welcome').textContent='Welcome to TGS';meta.textContent='Your account is approved, but your student admission record is not linked yet. Please contact the TGS Admin. No demo data is shown.';return}
   $('welcome').textContent='Welcome, '+student.full_name+'!';
   meta.className='muted';meta.textContent='Class: '+student.class_name+'  ·  Roll No: '+student.roll_number;
