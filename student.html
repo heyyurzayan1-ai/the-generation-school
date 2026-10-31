@@ -1,28 +1,57 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#101b32"><title>TGS | Student Portal</title><style>
-:root{--navy:#101b32;--navy2:#1d3458;--gold:#c9a45c;--gold2:#ead29b;--bg:#f4f3ef;--ink:#1b2940;--muted:#738096;--line:#e7e2d8}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px Inter,system-ui,-apple-system,Segoe UI,Arial}header{background:linear-gradient(120deg,#0c172b,#1c3154 70%,#263c5e);color:white;padding:23px max(18px,calc((100% - 1120px)/2));border-bottom:3px solid var(--gold);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}header h1{font:500 25px Georgia;margin:0 0 5px}header p{margin:0;color:#cbd5e1;font-size:12px;letter-spacing:1px}.pill{background:#fff0cf;color:#795d2d;padding:7px 11px;border-radius:30px;font-size:10px;font-weight:900;letter-spacing:1px}.wrap{max-width:1120px;margin:24px auto;padding:0 16px 48px}.nav{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 18px}.nav button,button{border:0;border-radius:9px;padding:11px 15px;background:linear-gradient(120deg,#c5a15b,#e1c582);color:#17233b;font-weight:800;cursor:pointer}.nav button{background:white;border:1px solid var(--line);color:var(--navy)}.nav button.active{background:var(--navy);color:white}.panel,.card{background:white;border:1px solid var(--line);border-radius:15px;padding:19px;margin:12px 0;box-shadow:0 8px 26px #18243a08}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:13px}.metric{font:34px Georgia;color:var(--navy);margin-top:8px}.muted,small{color:var(--muted)}h2,h3{color:var(--navy)}input,select,textarea{width:100%;padding:12px;border:1px solid #dce1e8;border-radius:9px;margin:6px 0 13px;font:inherit;background:#fff}label{font-size:12px;font-weight:800;color:#536176}form{max-width:760px}.row{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}.item{padding:14px;border:1px solid var(--line);border-radius:11px;margin:9px 0;background:#fffdf9}.notice{background:#fff8e9;border-left:4px solid var(--gold);padding:13px;border-radius:8px;margin:12px 0;color:#69552f}.page{display:none}.page.active{display:block}.table{overflow:auto}table{width:100%;border-collapse:collapse}td,th{text-align:left;padding:11px;border-bottom:1px solid var(--line);font-size:13px}th{color:#876b38}.page-title{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.back{color:var(--gold2);text-decoration:none}@media(max-width:600px){header{padding:18px}.wrap{padding:0 11px 30px}.panel,.card{padding:15px}.nav{gap:6px}.nav button{padding:9px 11px;font-size:12px}}
-</style></head><body><header><div><h1>THE GENERATION SCHOOL</h1><p>STUDENT LEARNING PORTAL · LEARN EVERY DAY</p></div><span class="pill">SECURE STUDENT PORTAL</span><a class="back" href="./index.html">← Portal Home</a></header><main class="wrap"><div class="panel"><div class="page-title"><div><h2 id="welcome">Welcome to your learning space</h2><p class="muted">Your daily classroom, resources and school updates.</p></div><span class="pill">STUDENT PORTAL</span></div><div class="row"><div><label>Choose class</label><select id="sClass"></select></div><div><label>Demo student name</label><input id="sName" value="Ayesha Khan"></div></div></div><div class="grid"><div class="card">Assigned homework<div class="metric" id="hwCount">0</div></div><div class="card">Study resources<div class="metric" id="matCount">0</div></div><div class="card">Attendance records<div class="metric" id="attCount">0</div></div></div><nav class="nav"><button class="active" data-page="hw">Homework</button><button data-page="materials">Study Materials</button><button data-page="syllabus">Syllabus</button><button data-page="results">Exams & Results</button><button data-page="attendance">Attendance</button><button data-page="ann">Announcements</button></nav>
-<section class="page active" id="hw"><h2>📘 Homework & Daily Classwork</h2><div id="homework"></div></section><section class="page" id="materials"><h2>📚 Study Materials</h2><div id="materialList"></div></section><section class="page" id="syllabus"><h2>📖 Syllabus & Curriculum</h2><div id="syllabusList"></div></section><section class="page" id="results"><h2>🏅 Exams & Results</h2><div id="resultList"></div></section><section class="page" id="attendance"><h2>✓ Attendance Summary</h2><div id="attendanceList"></div></section><section class="page" id="ann"><h2>📢 School Announcements</h2><div id="announcementList"></div></section></main><script>
-const $=id=>document.getElementById(id), esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#101b32">
+<title>TGS | Student Portal</title>
+<style>
+:root{--navy:#101b32;--gold:#c9a45c;--bg:#f4f3ef;--ink:#1b2940;--muted:#738096;--line:#e7e2d8}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px Inter,system-ui,Arial}
+header{background:linear-gradient(120deg,#0c172b,#1c3154 70%,#263c5e);color:white;padding:23px max(18px,calc((100% - 1120px)/2));border-bottom:3px solid var(--gold);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+header h1{font:500 25px Georgia;margin:0 0 5px}header p{margin:0;color:#cbd5e1;font-size:12px;letter-spacing:1px}.pill{background:#fff0cf;color:#795d2d;padding:7px 11px;border-radius:30px;font-size:10px;font-weight:900;letter-spacing:1px}
+.wrap{max-width:1120px;margin:24px auto;padding:0 16px 48px}.nav{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 18px}
+button{border:0;border-radius:9px;padding:11px 15px;background:linear-gradient(120deg,#c5a15b,#e1c582);color:#17233b;font-weight:800;cursor:pointer}.nav button{background:white;border:1px solid var(--line);color:var(--navy)}.nav button.active{background:var(--navy);color:white}
+.panel,.card{background:white;border:1px solid var(--line);border-radius:15px;padding:19px;margin:12px 0;box-shadow:0 8px 26px #18243a08}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:13px}.metric{font:34px Georgia;color:var(--navy);margin-top:8px}.muted,small{color:var(--muted)}h2{color:var(--navy)}.item{padding:14px;border:1px solid var(--line);border-radius:11px;margin:9px 0;background:#fffdf9}.notice{background:#fff8e9;border-left:4px solid var(--gold);padding:13px;border-radius:8px;margin:12px 0;color:#69552f}.page{display:none}.page.active{display:block}.page-title{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.back{color:#ead29b;text-decoration:none}
+@media(max-width:600px){header{padding:18px}.wrap{padding:0 11px 30px}.panel,.card{padding:15px}.nav{gap:6px}.nav button{padding:9px 11px;font-size:12px}}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.0"></script>
+<script src="./supabase-config.js"></script>
+</head>
+<body>
+<header><div><h1>THE GENERATION SCHOOL</h1><p>STUDENT LEARNING PORTAL · LEARN EVERY DAY</p></div><span class="pill">SECURE STUDENT PORTAL</span><a class="back" href="./index.html">← Portal Home</a></header>
+<main class="wrap">
+<div class="panel"><div class="page-title"><div><h2 id="welcome">Welcome to your learning space</h2><p class="muted">Your daily classroom, resources and school updates.</p></div><span class="pill">STUDENT PORTAL</span></div><div id="studentMeta" class="muted">Checking your account…</div></div>
+<div class="grid"><div class="card">Assigned homework<div class="metric" id="hwCount">—</div></div><div class="card">Study resources<div class="metric" id="matCount">—</div></div><div class="card">Attendance records<div class="metric" id="attCount">—</div></div></div>
+<nav class="nav"><button class="active" data-page="hw">Homework</button><button data-page="materials">Study Materials</button><button data-page="syllabus">Syllabus</button><button data-page="results">Exams & Results</button><button data-page="attendance">Attendance</button><button data-page="ann">Announcements</button></nav>
+<section class="page active" id="hw"><h2>📘 Homework & Daily Classwork</h2><div id="homework"></div></section>
+<section class="page" id="materials"><h2>📚 Study Materials</h2><div id="materialList"></div></section>
+<section class="page" id="syllabus"><h2>📖 Syllabus & Curriculum</h2><div id="syllabusList"></div></section>
+<section class="page" id="results"><h2>🏅 Exams & Results</h2><div id="resultList"></div></section>
+<section class="page" id="attendance"><h2>✓ Attendance Summary</h2><div id="attendanceList"></div></section>
+<section class="page" id="ann"><h2>📢 School Announcements</h2><div id="announcementList"></div></section>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function nav(id){document.querySelectorAll('.page').forEach(x=>x.classList.toggle('active',x.id===id));document.querySelectorAll('[data-page]').forEach(x=>x.classList.toggle('active',x.dataset.page===id))}
-document.querySelectorAll('[data-page]').forEach(b=>b.onclick=()=>nav(b.dataset.page));
+document.querySelectorAll('[data-page]').forEach(b=>b.addEventListener('click',()=>nav(b.dataset.page)));
 (async()=>{
- const status=document.createElement('div');status.className='notice';status.textContent='Loading your secure student record…';document.querySelector('main.wrap').prepend(status);
+ const meta=$('studentMeta');meta.className='notice';meta.textContent='Loading your secure student record…';
  try{
-  const sb=supabase.createClient(TGS_SUPABASE_URL,TGS_SUPABASE_PUBLISHABLE_KEY);
-  const {data:{session},error:se}=await sb.auth.getSession();if(se)throw se;
+  if(!window.supabase||!window.TGS_SUPABASE_URL||!window.TGS_SUPABASE_PUBLISHABLE_KEY)throw new Error('Supabase configuration did not load. Refresh the page.');
+  const sb=window.supabase.createClient(window.TGS_SUPABASE_URL,window.TGS_SUPABASE_PUBLISHABLE_KEY);
+  const {data:{session},error:sessionError}=await sb.auth.getSession();if(sessionError)throw sessionError;
   if(!session){location.replace('./auth.html?role=student');return}
   const uid=session.user.id;
-  const {data:profile,error:pe}=await sb.from('profiles').select('full_name,role,approval_status,class_name').eq('id',uid).single();
-  if(pe)throw pe;
+  const {data:profile,error:profileError}=await sb.from('profiles').select('full_name,role,approval_status').eq('id',uid).single();
+  if(profileError)throw profileError;
   if(profile.role!=='student'||profile.approval_status!=='approved'){await sb.auth.signOut();location.replace('./auth.html?role=student');return}
-  const {data:student,error:ste}=await sb.from('students').select('id,full_name,father_name,class_name,roll_number,guardian_phone').eq('user_id',uid).maybeSingle();
-  if(ste)throw ste;
-  if(!student){status.textContent='Your account is approved, but the school has not linked a student admission record to this login yet. Please contact the TGS Admin. No demo data is being shown.';document.querySelectorAll('.grid .metric').forEach(x=>x.textContent='—');return}
+  const {data:student,error:studentError}=await sb.from('students').select('id,full_name,father_name,class_name,roll_number').eq('user_id',uid).maybeSingle();
+  if(studentError)throw studentError;
+  if(!student){$('welcome').textContent='Welcome to TGS';meta.textContent='Your account is approved, but your student admission record is not linked yet. Please contact the TGS Admin. No demo data is shown.';return}
   $('welcome').textContent='Welcome, '+student.full_name+'!';
-  $('sClass').replaceWith(Object.assign(document.createElement('div'),{className:'item',innerHTML:'<b>Class:</b> '+esc(student.class_name)+' &nbsp; <b>Roll No:</b> '+esc(student.roll_number)}));
-  $('sName').parentElement.remove();
-  const className=student.class_name, sid=student.id;
-  const results=await Promise.all([
+  meta.className='muted';meta.textContent='Class: '+student.class_name+'  ·  Roll No: '+student.roll_number;
+  const className=student.class_name,sid=student.id;
+  const queries=await Promise.all([
    sb.from('homework').select('id,subject,title,details,due_date,created_at').eq('class_name',className).order('created_at',{ascending:false}),
    sb.from('study_materials').select('id,class_name,subject,title,file_url,file_name,created_at').or('class_name.eq.'+className+',class_name.is.null').order('created_at',{ascending:false}),
    sb.from('curriculum').select('id,class_name,syllabus_title,chapter_name,learning_outcomes,resource_url,subjects(name)').eq('class_name',className).order('created_at',{ascending:true}),
@@ -30,18 +59,18 @@ document.querySelectorAll('[data-page]').forEach(b=>b.onclick=()=>nav(b.dataset.
    sb.from('attendance').select('id,attendance_date,status,note').eq('student_id',sid).order('attendance_date',{ascending:false}),
    sb.from('announcements').select('id,title,body,audience,created_at').order('created_at',{ascending:false})
   ]);
-  for(const r of results)if(r.error)throw r.error;
-  const [hw,mat,sy,ex,att,ann]=results.map(r=>r.data||[]);
-  const examIds=ex.map(x=>x.id);let marks=[];
-  if(examIds.length){const mr=await sb.from('exam_results').select('id,exam_id,obtained_marks,remarks').eq('student_id',sid).in('exam_id',examIds);if(mr.error)throw mr.error;marks=mr.data||[]}
-  $('hwCount').textContent=hw.length;$('matCount').textContent=mat.length;$('attCount').textContent=att.length;
+  for(const q of queries)if(q.error)throw q.error;
+  const [hw,materials,syllabus,exams,attendance,announcements]=queries.map(q=>q.data||[]);
+  let marks=[];
+  if(exams.length){const m=await sb.from('exam_results').select('id,exam_id,obtained_marks,remarks').eq('student_id',sid).in('exam_id',exams.map(e=>e.id));if(m.error)throw m.error;marks=m.data||[]}
+  $('hwCount').textContent=hw.length;$('matCount').textContent=materials.length;$('attCount').textContent=attendance.length;
   $('homework').innerHTML=hw.map(x=>'<div class="item"><b>'+esc(x.subject)+' — '+esc(x.title)+'</b><p>'+esc(x.details)+'</p><small>Due: '+esc(x.due_date||'Not set')+'</small></div>').join('')||'<p class="muted">No homework assigned to your class yet.</p>';
-  $('materialList').innerHTML=mat.map(x=>'<div class="item"><b>'+esc(x.subject)+' — '+esc(x.title)+'</b><p><a href="'+esc(x.file_url)+'" target="_blank" rel="noopener">Open study material ↗</a></p></div>').join('')||'<p class="muted">No study materials shared yet.</p>';
-  $('syllabusList').innerHTML=sy.map(x=>'<div class="item"><b>'+esc(x.subjects?.name||x.syllabus_title)+'</b><p>'+esc(x.chapter_name)+'</p><p>'+esc(x.learning_outcomes)+'</p>'+(x.resource_url?'<a href="'+esc(x.resource_url)+'" target="_blank" rel="noopener">Open resource ↗</a>':'')+'</div>').join('')||'<p class="muted">Syllabus has not been uploaded yet.</p>';
-  $('resultList').innerHTML=ex.map(x=>{const m=marks.find(y=>y.exam_id===x.id);return '<div class="item"><b>'+esc(x.title)+' · '+esc(x.subject)+'</b><p>Exam date: '+esc(x.exam_date||'Not set')+' · Marks: '+(m?esc(m.obtained_marks)+' / '+esc(x.total_marks):'Not published')+'</p>'+(m?.remarks?'<small>'+esc(m.remarks)+'</small>':'')+'</div>'}).join('')||'<p class="muted">No exams announced yet.</p>';
-  $('attendanceList').innerHTML=att.map(x=>'<div class="item">'+esc(x.attendance_date)+' — <b>'+esc(x.status)+'</b>'+(x.note?' · '+esc(x.note):'')+'</div>').join('')||'<p class="muted">No attendance records yet.</p>';
-  $('announcementList').innerHTML=ann.filter(x=>['all','student','students'].includes(String(x.audience).toLowerCase())).map(x=>'<div class="item"><b>'+esc(x.title)+'</b><p>'+esc(x.body)+'</p></div>').join('')||'<p class="muted">No announcements for students.</p>';
-  status.remove();
- }catch(e){status.textContent='Could not load your school data: '+(e.message||'Unknown error')+'. Please contact TGS Admin.';console.error(e)}
+  $('materialList').innerHTML=materials.map(x=>'<div class="item"><b>'+esc(x.subject)+' — '+esc(x.title)+'</b><p><a href="'+esc(x.file_url)+'" target="_blank" rel="noopener">Open study material ↗</a></p></div>').join('')||'<p class="muted">No study materials shared yet.</p>';
+  $('syllabusList').innerHTML=syllabus.map(x=>'<div class="item"><b>'+esc(x.subjects?.name||x.syllabus_title)+'</b><p>'+esc(x.chapter_name)+'</p><p>'+esc(x.learning_outcomes)+'</p>'+(x.resource_url?'<a href="'+esc(x.resource_url)+'" target="_blank" rel="noopener">Open resource ↗</a>':'')+'</div>').join('')||'<p class="muted">Syllabus has not been uploaded yet.</p>';
+  $('resultList').innerHTML=exams.map(x=>{const m=marks.find(y=>y.exam_id===x.id);return '<div class="item"><b>'+esc(x.title)+' · '+esc(x.subject)+'</b><p>Exam date: '+esc(x.exam_date||'Not set')+' · Marks: '+(m?esc(m.obtained_marks)+' / '+esc(x.total_marks):'Not published')+'</p>'+(m?.remarks?'<small>'+esc(m.remarks)+'</small>':'')+'</div>'}).join('')||'<p class="muted">No exams announced yet.</p>';
+  $('attendanceList').innerHTML=attendance.map(x=>'<div class="item">'+esc(x.attendance_date)+' — <b>'+esc(x.status)+'</b>'+(x.note?' · '+esc(x.note):'')+'</div>').join('')||'<p class="muted">No attendance records yet.</p>';
+  $('announcementList').innerHTML=announcements.filter(x=>['all','students'].includes(String(x.audience).toLowerCase())).map(x=>'<div class="item"><b>'+esc(x.title)+'</b><p>'+esc(x.body)+'</p></div>').join('')||'<p class="muted">No announcements for students.</p>';
+ }catch(e){meta.className='notice';meta.textContent='Could not load your school data: '+(e.message||'Unknown error')+'. Please contact TGS Admin.';console.error(e)}
 })();
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.0"></script><script src="./supabase-config.js"></script><script>(async()=>{const s=supabase.createClient(TGS_SUPABASE_URL,TGS_SUPABASE_PUBLISHABLE_KEY),{data:{session}}=await s.auth.getSession();if(!session){location.replace('./auth.html?role=student');return}const {data:p,error}=await s.from('profiles').select('role,approval_status').eq('id',session.user.id).single();if(error||p.role!=='student'||p.approval_status!=='approved'){await s.auth.signOut();location.replace('./auth.html?role=student')}})();</script></body></html>
+</script>
+</body></html>
