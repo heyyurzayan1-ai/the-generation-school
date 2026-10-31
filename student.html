@@ -42,10 +42,14 @@ document.querySelectorAll('[data-page]').forEach(b=>b.addEventListener('click',(
   const {data:{session},error:sessionError}=await sb.auth.getSession();if(sessionError)throw sessionError;
   if(!session){location.replace('./auth.html?role=student');return}
   const uid=session.user.id;
-  const {data:profile,error:profileError}=await sb.from('profiles').select('full_name,role,approval_status').eq('id',uid).single();
+  const [profileResult,studentResult]=await Promise.all([
+   sb.from('profiles').select('full_name,role,approval_status').eq('id',uid).single(),
+   sb.from('students').select('id,full_name,father_name,class_name,roll_number').eq('user_id',uid).maybeSingle()
+  ]);
+  const {data:profile,error:profileError}=profileResult;
   if(profileError)throw profileError;
   if(profile.role!=='student'||profile.approval_status!=='approved'){await sb.auth.signOut();location.replace('./auth.html?role=student');return}
-  const {data:student,error:studentError}=await sb.from('students').select('id,full_name,father_name,class_name,roll_number').eq('user_id',uid).maybeSingle();
+  const {data:student,error:studentError}=studentResult;
   if(studentError)throw studentError;
   if(!student){$('welcome').textContent='Welcome to TGS';meta.textContent='Your account is approved, but your student admission record is not linked yet. Please contact the TGS Admin. No demo data is shown.';return}
   $('welcome').textContent='Welcome, '+student.full_name+'!';
@@ -57,12 +61,11 @@ document.querySelectorAll('[data-page]').forEach(b=>b.addEventListener('click',(
    sb.from('curriculum').select('id,class_name,syllabus_title,chapter_name,learning_outcomes,resource_url,subjects(name)').eq('class_name',className).order('created_at',{ascending:true}),
    sb.from('exams').select('id,title,subject,exam_date,total_marks').eq('class_name',className).order('exam_date',{ascending:false}),
    sb.from('attendance').select('id,attendance_date,status,note').eq('student_id',sid).order('attendance_date',{ascending:false}),
-   sb.from('announcements').select('id,title,body,audience,created_at').order('created_at',{ascending:false})
+   sb.from('announcements').select('id,title,body,audience,created_at').order('created_at',{ascending:false}),
+   sb.from('exam_results').select('id,exam_id,obtained_marks,remarks').eq('student_id',sid)
   ]);
   for(const q of queries)if(q.error)throw q.error;
-  const [hw,materials,syllabus,exams,attendance,announcements]=queries.map(q=>q.data||[]);
-  let marks=[];
-  if(exams.length){const m=await sb.from('exam_results').select('id,exam_id,obtained_marks,remarks').eq('student_id',sid).in('exam_id',exams.map(e=>e.id));if(m.error)throw m.error;marks=m.data||[]}
+  const [hw,materials,syllabus,exams,attendance,announcements,marks]=queries.map(q=>q.data||[]);
   $('hwCount').textContent=hw.length;$('matCount').textContent=materials.length;$('attCount').textContent=attendance.length;
   $('homework').innerHTML=hw.map(x=>'<div class="item"><b>'+esc(x.subject)+' — '+esc(x.title)+'</b><p>'+esc(x.details)+'</p><small>Due: '+esc(x.due_date||'Not set')+'</small></div>').join('')||'<p class="muted">No homework assigned to your class yet.</p>';
   $('materialList').innerHTML=materials.map(x=>'<div class="item"><b>'+esc(x.subject)+' — '+esc(x.title)+'</b><p><a href="'+esc(x.file_url)+'" target="_blank" rel="noopener">Open study material ↗</a></p></div>').join('')||'<p class="muted">No study materials shared yet.</p>';
