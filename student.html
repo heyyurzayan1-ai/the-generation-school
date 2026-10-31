@@ -73,4 +73,4 @@ document.querySelectorAll('[data-page]').forEach(b=>b.addEventListener('click',(
  }catch(e){meta.className='notice';meta.textContent='Could not load your school data: '+(e.message||'Unknown error')+'. Please contact TGS Admin.';console.error(e)}
 })();
 </script>
-</body></html>
+<script>if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));}</script></body></html>
