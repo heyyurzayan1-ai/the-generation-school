@@ -42,14 +42,12 @@ document.querySelectorAll('[data-page]').forEach(b=>b.addEventListener('click',(
   const {data:{session},error:sessionError}=await sb.auth.getSession();if(sessionError)throw sessionError;
   if(!session){location.replace('./auth.html?role=student');return}
   const uid=session.user.id;
-  const [profileResult,studentResult]=await Promise.all([
-   sb.from('profiles').select('full_name,role,approval_status').eq('id',uid).single(),
-   profile.role==='admin'?sb.from('students').select('id,full_name,father_name,class_name,roll_number').order('full_name').limit(200):sb.from('students').select('id,full_name,father_name,class_name,roll_number').eq('user_id',uid).maybeSingle()
-  ]);
-  const {data:profile,error:profileError}=profileResult;
+  const {data:profile,error:profileError}=await sb.from('profiles').select('full_name,role,approval_status').eq('id',uid).single();
   if(profileError)throw profileError;
   if(!['student','admin'].includes(profile.role)||profile.approval_status!=='approved'){await sb.auth.signOut();location.replace('./auth.html?role=student');return}
-  const {data:studentData,error:studentError}=studentResult;
+  const {data:studentData,error:studentError}=profile.role==='admin'
+   ?await sb.from('students').select('id,full_name,father_name,class_name,roll_number').order('full_name').limit(200)
+   :await sb.from('students').select('id,full_name,father_name,class_name,roll_number').eq('user_id',uid).maybeSingle();
   if(studentError)throw studentError;
   const requestedStudent=new URLSearchParams(location.search).get('student');let student=profile.role==='admin'?((studentData||[]).find(x=>x.id===requestedStudent)||(studentData||[])[0]):(studentData||null);
   if(profile.role==='admin'){$('adminStudentPicker').style.display='block';$('adminStudentSelect').innerHTML=(studentData||[]).map(x=>'<option value="'+esc(x.id)+'">'+esc(x.full_name)+' · '+esc(x.class_name)+' · '+esc(x.roll_number)+'</option>').join('');if(student)$('adminStudentSelect').value=student.id;$('adminStudentSelect').onchange=()=>{location.search='?student='+encodeURIComponent($('adminStudentSelect').value);};}
