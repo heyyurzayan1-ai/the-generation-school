@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TGS · Link Student Accounts</title>
+<style>
+:root{--navy:#101b32;--gold:#c9a45c;--bg:#f4f3ef;--line:#e7e2d8}*{box-sizing:border-box}body{margin:0;background:var(--bg);font:15px system-ui,Arial;color:#1b2940}header{background:var(--navy);color:white;padding:20px max(16px,calc((100% - 1000px)/2));border-bottom:3px solid var(--gold);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}header a{color:#ead29b}main{max-width:1000px;margin:24px auto;padding:0 15px}.card{background:#fff;border:1px solid var(--line);border-radius:13px;padding:18px;margin:13px 0}.muted{color:#738096;font-size:13px}.notice{background:#fff8e9;border-left:4px solid var(--gold);padding:12px;border-radius:8px;margin:12px 0}select,input{width:100%;padding:11px;border:1px solid #dce1e8;border-radius:8px;margin:7px 0 12px;font:inherit}button{padding:11px 15px;border:0;border-radius:8px;background:linear-gradient(120deg,#c5a15b,#e1c582);font-weight:800;cursor:pointer}.row{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}.item{border:1px solid var(--line);border-radius:9px;padding:12px;margin:8px 0}.status{font-weight:800;color:#74582b}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.0"></script><script src="./supabase-config.js"></script></head>
+<body><header><b>THE GENERATION SCHOOL · ADMIN</b><nav><a href="./admin.html">Admin Home</a>　<a href="./approvals.html">Approvals</a></nav></header>
+<main><h1>Link Student Login to Admission Record</h1><p class="muted">Connect an approved Student login with the correct existing admission record. This is required before the student portal can show personal school data.</p>
+<div id="message" class="notice">Verifying administrator access…</div>
+<section class="card"><h2>Approved student accounts</h2><div id="accounts">Loading…</div></section>
+<section class="card"><h2>Unlinked admission records</h2><div id="admissions">Loading…</div></section>
+<section class="card"><h2>Currently linked accounts</h2><div id="linked">Loading…</div></section>
+</main>
+<script>
+const $=id=>document.getElementById(id),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+(async()=>{
+ const say=(m,err=false)=>{$('message').textContent=m;$('message').style.background=err?'#fdeeee':'#fff8e9'};
+ try{
+  if(!window.supabase||!window.TGS_SUPABASE_URL||!window.TGS_SUPABASE_PUBLISHABLE_KEY)throw new Error('Supabase configuration failed to load.');
+  const sb=window.supabase.createClient(window.TGS_SUPABASE_URL,window.TGS_SUPABASE_PUBLISHABLE_KEY);
+  const {data:{session},error:se}=await sb.auth.getSession();if(se)throw se;
+  if(!session){location.replace('./auth.html?role=admin');return}
+  const {data:me,error:meErr}=await sb.from('profiles').select('role,approval_status').eq('id',session.user.id).single();
+  if(meErr||!me||me.role!=='admin'||me.approval_status!=='approved'){await sb.auth.signOut();location.replace('./auth.html?role=admin');return}
+  async function load(){
+   const [a,s]=await Promise.all([
+    sb.from('profiles').select('id,email,full_name,created_at').eq('role','student').eq('approval_status','approved').order('created_at',{ascending:false}),
+    sb.from('students').select('id,full_name,father_name,class_name,roll_number,user_id').order('class_name').order('roll_number')
+   ]);
+   if(a.error)throw a.error;if(s.error)throw s.error;
+   const accounts=a.data||[],students=s.data||[],linked=students.filter(x=>x.user_id),unlinked=students.filter(x=>!x.user_id);
+   $('accounts').innerHTML=accounts.length?accounts.map(x=>'<div class="item"><b>'+esc(x.full_name)+'</b><div>'+esc(x.email)+'</div><small>'+esc(x.id)+'</small></div>').join(''):'No approved student accounts found.';
+   $('admissions').innerHTML=unlinked.length?unlinked.map(x=>'<div class="item"><b>'+esc(x.full_name)+'</b> · '+esc(x.class_name)+' · Roll '+esc(x.roll_number)+'<div class="muted">Father/Guardian: '+esc(x.father_name)+'</div><label>Choose approved login</label><select id="account-'+esc(x.id)+'"><option value="">Select student account…</option>'+accounts.map(a=>'<option value="'+esc(a.id)+'">'+esc(a.full_name)+' — '+esc(a.email)+'</option>').join('')+'</select><button data-link="'+esc(x.id)+'">Link this account</button></div>').join(''):'No unlinked admission records.';
+   $('linked').innerHTML=linked.length?linked.map(x=>'<div class="item"><b>'+esc(x.full_name)+'</b> · '+esc(x.class_name)+' · Roll '+esc(x.roll_number)+'<div class="muted">Account ID: '+esc(x.user_id)+'</div><button class="unlink" data-unlink="'+esc(x.id)+'">Unlink</button></div>').join(''):'No linked records yet.';
+   document.querySelectorAll('[data-link]').forEach(b=>b.onclick=async()=>{const id=b.dataset.link,uid=$('account-'+id).value;if(!uid){say('Please select an approved student account first.',true);return}b.disabled=true;const {error}=await sb.from('students').update({user_id:uid}).eq('id',id).is('user_id',null);if(error){say('Could not link: '+error.message,true);b.disabled=false;return}say('Student account linked successfully.');await load()});
+   document.querySelectorAll('[data-unlink]').forEach(b=>b.onclick=async()=>{if(!confirm('Unlink this student login?'))return;b.disabled=true;const {error}=await sb.from('students').update({user_id:null}).eq('id',b.dataset.unlink);if(error){say('Could not unlink: '+error.message,true);b.disabled=false;return}say('Student login unlinked.');await load()});
+   if(accounts.length===0)say('No approved student accounts to link. Approve a student registration first.');
+   else if(unlinked.length===0)say('All existing admission records are already linked, or no admission records exist.');
+   else say('Select the correct account for each admission record. Check name, class and roll number carefully before linking.');
+  }
+  await load();
+ }catch(e){say('Error: '+(e.message||'Unknown error'),true);console.error(e)}
+})();
+</script></body></html>
