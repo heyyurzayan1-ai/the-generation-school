@@ -42,7 +42,7 @@ document.querySelectorAll('[data-page]').forEach(b=>b.addEventListener('click',(
   const {data:{session},error:sessionError}=await sb.auth.getSession();if(sessionError)throw sessionError;
   if(!session){location.replace('./auth.html?role=student');return}
   const uid=session.user.id;
-  const {data:profile,error:profileError}=await sb.from('profiles').select('full_name,role,approval_status').eq('id',uid).single();
+  const {data:profile,error:profileError}=await sb.from('profiles').select('full_name,role,approval_status,class_name').eq('id',uid).single();
   if(profileError)throw profileError;
   if(!['student','admin'].includes(profile.role)||profile.approval_status!=='approved'){await sb.auth.signOut();location.replace('./auth.html?role=student');return}
   const {data:studentData,error:studentError}=profile.role==='admin'
@@ -52,6 +52,14 @@ document.querySelectorAll('[data-page]').forEach(b=>b.addEventListener('click',(
   const requestedStudent=new URLSearchParams(location.search).get('student');let student=profile.role==='admin'?((studentData||[]).find(x=>x.id===requestedStudent)||(studentData||[])[0]):(studentData||null);
   if(profile.role==='admin'){$('adminStudentPicker').style.display='block';$('adminStudentSelect').innerHTML=(studentData||[]).map(x=>'<option value="'+esc(x.id)+'">'+esc(x.full_name)+' · '+esc(x.class_name)+' · '+esc(x.roll_number)+'</option>').join('');if(student)$('adminStudentSelect').value=student.id;$('adminStudentSelect').onchange=()=>{location.search='?student='+encodeURIComponent($('adminStudentSelect').value);};}
   if(!student){$('welcome').textContent='Welcome to TGS';meta.textContent='Your account is approved, but your student admission record is not linked yet. Please contact the TGS Admin. No demo data is shown.';return}
+  if(profile.role==='student'&&!student.class_name){
+    const {data:classRows,error:classError}=await sb.from('classes').select('name').order('sort_order');
+    if(classError)throw classError;
+    meta.className='notice';
+    meta.innerHTML='<b>Welcome to TGS!</b><p>Please select your current class to open your classroom.</p><select id="firstClass" style="width:100%;max-width:420px;padding:12px;margin:8px 0"><option value="">Select your class</option>'+(classRows||[]).map(c=>'<option value="'+esc(c.name)+'">'+esc(c.name)+'</option>').join('')+'</select><br><button id="saveFirstClass">Save My Class</button><span id="classSaveMsg" style="display:block;margin-top:8px"></span>';
+    $('saveFirstClass').onclick=async()=>{const chosen=$('firstClass').value,btn=$('saveFirstClass');if(!chosen){$('classSaveMsg').textContent='Please select a class.';return;}btn.disabled=true;$('classSaveMsg').textContent='Saving…';try{const {error}=await sb.rpc('set_my_student_class',{p_class_name:chosen});if(error)throw error;location.reload();}catch(err){$('classSaveMsg').textContent=err.message||'Could not save class.';btn.disabled=false;}};
+    return;
+  }
   $('welcome').textContent='Welcome, '+student.full_name+'!';
   meta.className='muted';meta.textContent='Class: '+student.class_name+'  ·  Roll No: '+student.roll_number;
   const className=student.class_name,sid=student.id;
