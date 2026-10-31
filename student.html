@@ -19,7 +19,7 @@ button{border:0;border-radius:9px;padding:11px 15px;background:linear-gradient(1
 <body>
 <header><div><h1>THE GENERATION SCHOOL</h1><p>STUDENT LEARNING PORTAL · LEARN EVERY DAY</p></div><span class="pill">SECURE STUDENT PORTAL</span><a class="back" href="./index.html">← Portal Home</a></header>
 <main class="wrap">
-<div class="panel"><div class="page-title"><div><h2 id="welcome">Welcome to your learning space</h2><p class="muted">Your daily classroom, resources and school updates.</p></div><span class="pill">STUDENT PORTAL</span></div><div id="studentMeta" class="muted">Checking your account…</div></div>
+<div class="panel"><div class="page-title"><div><h2 id="welcome">Welcome to your learning space</h2><p class="muted">Your daily classroom, resources and school updates.</p></div><span class="pill">STUDENT PORTAL</span></div><div id="studentMeta" class="muted">Checking your account…</div><div id="adminStudentPicker" style="display:none;margin-top:12px"><label for="adminStudentSelect">Admin preview: choose a student</label><select id="adminStudentSelect" style="padding:10px;max-width:420px;width:100%"></select></div></div>
 <div class="grid"><div class="card">Assigned homework<div class="metric" id="hwCount">—</div></div><div class="card">Study resources<div class="metric" id="matCount">—</div></div><div class="card">Attendance records<div class="metric" id="attCount">—</div></div></div>
 <nav class="nav"><button class="active" data-page="hw">Homework</button><button data-page="materials">Study Materials</button><button data-page="syllabus">Syllabus</button><button data-page="results">Exams & Results</button><button data-page="attendance">Attendance</button><button data-page="ann">Announcements</button></nav>
 <section class="page active" id="hw"><h2>📘 Homework & Daily Classwork</h2><div id="homework"></div></section>
@@ -44,13 +44,15 @@ document.querySelectorAll('[data-page]').forEach(b=>b.addEventListener('click',(
   const uid=session.user.id;
   const [profileResult,studentResult]=await Promise.all([
    sb.from('profiles').select('full_name,role,approval_status').eq('id',uid).single(),
-   sb.from('students').select('id,full_name,father_name,class_name,roll_number').eq('user_id',uid).maybeSingle()
+   profile.role==='admin'?sb.from('students').select('id,full_name,father_name,class_name,roll_number').order('full_name').limit(200):sb.from('students').select('id,full_name,father_name,class_name,roll_number').eq('user_id',uid).maybeSingle()
   ]);
   const {data:profile,error:profileError}=profileResult;
   if(profileError)throw profileError;
-  if(profile.role!=='student'||profile.approval_status!=='approved'){await sb.auth.signOut();location.replace('./auth.html?role=student');return}
-  const {data:student,error:studentError}=studentResult;
+  if(!['student','admin'].includes(profile.role)||profile.approval_status!=='approved'){await sb.auth.signOut();location.replace('./auth.html?role=student');return}
+  const {data:studentData,error:studentError}=studentResult;
   if(studentError)throw studentError;
+  let student=profile.role==='admin'?(studentData||[])[0]:(studentData||null);
+  if(profile.role==='admin'){$('adminStudentPicker').style.display='block';$('adminStudentSelect').innerHTML=(studentData||[]).map(x=>'<option value="'+esc(x.id)+'">'+esc(x.full_name)+' · '+esc(x.class_name)+' · '+esc(x.roll_number)+'</option>').join('');$('adminStudentSelect').onchange=()=>{const chosen=(studentData||[]).find(x=>x.id===$('adminStudentSelect').value);if(chosen)location.hash='student-'+chosen.id;};}
   if(!student){$('welcome').textContent='Welcome to TGS';meta.textContent='Your account is approved, but your student admission record is not linked yet. Please contact the TGS Admin. No demo data is shown.';return}
   $('welcome').textContent='Welcome, '+student.full_name+'!';
   meta.className='muted';meta.textContent='Class: '+student.class_name+'  ·  Roll No: '+student.roll_number;
