@@ -23,16 +23,15 @@ function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&l
 function msg(t,bad=false){$('notice').textContent=t;$('notice').style.background=bad?'#fff0f0':'#fff8e9';$('notice').style.borderLeftColor=bad?'#b54a4a':'var(--gold)';}
 function nav(id){document.querySelectorAll('.page').forEach(x=>x.classList.toggle('active',x.id===id));document.querySelectorAll('[data-page]').forEach(x=>x.classList.toggle('active',x.dataset.page===id));}
 document.querySelectorAll('[data-page]').forEach(b=>b.addEventListener('click',()=>nav(b.dataset.page)));
-$('logout').onclick=async()=>{await client.auth.signOut();location.href='./auth.html?role=teacher';};
+$('logout').onclick=async()=>{await client.auth.signOut();location.href='./auth.html?role=admin';};
 try{
- const {data:{session},error:se}=await client.auth.getSession();if(se)throw se;if(!session){location.replace('./auth.html?role=teacher');return;}user=session.user;
+ const {data:{session},error:se}=await client.auth.getSession();if(se)throw se;if(!session){location.replace('./auth.html?role=admin');return;}user=session.user;
  const {data:profile,error:pe}=await client.from('profiles').select('full_name,role,approval_status').eq('id',user.id).single();if(pe)throw pe;
- if(profile.role!=='teacher'||profile.approval_status!=='approved'){await client.auth.signOut();location.replace('./auth.html?role=teacher');return;}
+ if(!['teacher','admin'].includes(profile.role)||profile.approval_status!=='approved'){await client.auth.signOut();location.replace('./auth.html?role=teacher');return;}
  $('teacherName').textContent=profile.full_name||user.email;
- const {data:assign,error:ae}=await client.from('teacher_classes').select('class_name').eq('teacher_id',user.id);if(ae)throw ae;
- classes=[...new Set((assign||[]).map(x=>x.class_name).filter(Boolean))].sort();
+ let assigned=[];if(profile.role==='admin'){const {data:allClasses,error:ce}=await client.from('classes').select('name').order('sort_order');if(ce)throw ce;assigned=(allClasses||[]).map(x=>x.name);}else{const {data:assign,error:ae}=await client.from('teacher_classes').select('class_name').eq('teacher_id',user.id);if(ae)throw ae;assigned=(assign||[]).map(x=>x.class_name);} classes=[...new Set(assigned.filter(Boolean))].sort();
  $('nav').hidden=false;
- if(!classes.length){msg('Aapka teacher account approved hai, lekin abhi koi class assign nahi hui. Admin se Teacher Class Assignment karwayein.');$('classCount').textContent='0';$('studentCount').textContent='0';$('hwCount').textContent='0';$('matCount').textContent='0';return;}
+ if(!classes.length){msg(profile.role==='admin'?'No classes have been created yet. Add classes in Admin Portal first.':'Aapka teacher account approved hai, lekin abhi koi class assign nahi hui. Admin se Teacher Class Assignment karwayein.');$('classCount').textContent='0';$('studentCount').textContent='0';$('hwCount').textContent='0';$('matCount').textContent='0';return;}
  const opts=classes.map(c=>'<option value="'+esc(c)+'">'+esc(c)+'</option>').join('');
  ['sClass','hClass','mClass','aClass'].forEach(id=>$(id).innerHTML=opts);
  const results=await Promise.all([
